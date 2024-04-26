@@ -85,15 +85,23 @@ img {
 	background: url(images/templatemo_wrapper_bg.png) repeat-y;
 }
 
-#templatemo_banner {
+#banner {
 	width: 980px;
-	height: 250px;
-	background: url(images/templatemo_banner_bg.jpg) no-repeat;
+	height: 100px;
+	
+}
+#titulo{
+    color:#ffecae;
+	margin-left: 300px;
+	position: absolute;
+	margin-top: 30px;
+	
+	
 }
 
 /* menu */
 
-#templatemo_menu {
+#menu {
 	clear: both;
 	width: 500px;
 	height: 65px;
@@ -101,18 +109,18 @@ img {
 	background: url(images/templatemo_menu_bg.jpg) no-repeat;
 }
 
-#templatemo_menu ul {
+#menu ul {
 	width: 500px;
 	margin: 0px;
 	padding: 20px 0 0 15px;
 	list-style: none;
 }
 
-#templatemo_menu ul li {
+#menu ul li {
 	display: inline;
 }
 
-#templatemo_menu ul li a {
+#menu ul li a {
 	float: left;
 	padding: 0 20px;
 	text-align: center;
@@ -123,176 +131,71 @@ img {
 	font-weight: bold;
 }
 
-#templatemo_menu li a:hover, #templatemo_menu li .current {
+#menu li a:hover, #menu li .current {
 	color: #ffffff;
 }
 /* end of menu*/
-
-#templatemo_content_wrapper {
-	clear: both;
-	width: 960px;
-	padding: 10px;
-}
-
-.templatemo_content {
-	float: left;
-	width: 900px;
-	padding: 20px 19px 0 19px;
-	background: #1b1919;
-	border: 1px solid #363434;
-}
-
-.header_01 {
-	padding: 0 0 5px 0;
-	margin: 0 0 10px 0;
-	font-size: 14px;
-	font-weight: bold;
-	color: #ffffff;
-	/*color: #e40b0b;*/
-}
-
-
-.header_02 {
-	padding: 0 0 5px 0;
-	margin: 0 0 10px 0;
-	font-size: 18px;
-	font-weight: bold;
-	color: #ffffff;
-	/*color: #e40b0b;*/
-}
-
-.header_03 {
-	padding: 0 0 5px 0;
-	font-size: 12px;
-	font-weight: bold;
-	color: #ffffff;
-	/*color: #99be29;*/	
-}
-
-.header_03 a { color: #ffffff; text-decoration: none; }
-.header_03 a:hover { color: #99FF00; }
-
-.templatemo_side_bar {
+.right {
 	float: left;
 	width: 180px;
 	padding: 20px 19px 0 19px;
 	background: #1b1919;
 	border: 1px solid #363434;	
+	height: 210px;
+	font-size: 18px;
+	font-weight: bold;
 }
 
-.templatemo_side_bar ul {
-	margin: 0px;
-	padding: 0px;
+
+
+#usuario{
+    color:rgb(255, 239, 187);
+    grid-area: 1 / 1;
+    border: solid green 1px;
 }
 
-.templatemo_side_bar ul li {
-	margin: 0px;
-	padding: 0 0 0 0;
-	margin-bottom: 5px;
-	border-left: 5px solid #000;
-	list-style: none;
-}
 
-.templatemo_side_bar ul li a {
-	display: block;
-	background: #242224;
-	padding: 5px 0 5px 10px;
-	color: #b5b1b1;
-	text-decoration: none;
-}
-
-.templatemo_side_bar ul li a:hover {
-	color: #ffffff;
-	background: #000;
-}
-
-.templatemo_side_bar form {
-	margin: 0px;
-	padding: 0px;
-}
-
-#search_field {
-	padding: 5px 0 0 0;
-	height: 20px;
-	width: 175px;
-	margin-bottom: 10px;
-}
-
-#search_button {
-	float: right;
-	width: 120px;
- 	height: 30px;
-	padding: 0;
-	margin: 0;
-	cursor: pointer;
-	font-size: 12px;
-	text-align: center;
-	white-space: pre;
-	background: url(images/templatemo_button_02.png) no-repeat; 
-	color: #000000;
-	border: none;
-}
-
-.content_section {
-	clear: both;
-	padding: 0 0 0 0;
-}
-
-.content_section p span {
-	color: #ffffff;
-}
-
-.image_wrapper_01 {
+.content {
 	float: left;
-	position: relative;
-	margin: 3px 20px 0 0;
-	background: #131212;
-	padding: 4px;
-}
-
-.image_wrapper_01 img {
+	width: 650px;
+	padding: 20px 19px 0 19px;
+	background: #1b1919;
 	border: 1px solid #363434;
+	margin-left: 10px;
 }
 
-.image_wrapper_02 {
-	position: relative;
+.header_01 {
+	padding: 0 0 5px 0;
 	margin: 0 0 10px 0;
-	background: #131212;
-	padding: 4px;
+	font-size: 20px;
+	font-weight: bold;
+	color: #ffffff;
+	/*color: #e40b0b;*/
 }
 
-.image_wrapper_02 span {
-	position: absolute;
-	width: 20px;
-	height: 20px;
-	bottom: 10px;
-	right: 10px;
-	background: url(images/templatemo_play_icon.jpg) no-repeat;
+
+.header_03 {
+	padding: 0 0 20px 0;
+	font-size: 18px;
+	
+	
+	/*color: #99be29;*/	
 }
 
-.image_wrapper_02:hover span {
-	background: url(images/templatemo_play_icon_hover.jpg) no-repeat;
-}
-
-.image_wrapper_02 img {
-	border: 1px solid #363434;
-}
-
-.image_wrapper img {
-	border: 1px solid #363434;
-}
+.header_03 a { color: #999999; text-decoration: none; font-weight: bold; }
+.header_03 a:hover { color: #ffffff; }
 
 .latest_news {
 	clear: both;
 	padding-bottom: 10px;
 }
 
-#templatemo_footer {
+#footer {
 	clear: both;
 	width: 990px;
 	height: 40px;
 	margin: 0 auto;
 	padding: 20px 0 0 0;
 	text-align: center;
-	background: url(images/templatemo_footer.jpg) no-repeat;
+	background: url(images/footer.jpg) no-repeat;
 }
