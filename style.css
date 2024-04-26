@@ -37,6 +37,8 @@ ul{
     list-style: none;
     grid-area: 1 / 2;
     border: solid green 1px;
+    width: fit-content;
+    margin-left: 40%;
 }
 .grid{
     display: grid;
