@@ -1,0 +1,56 @@
+html{
+    background-color: rgb(56, 56, 56);
+}
+p{
+    font-family: "hack";
+}
+#recuadro{
+    border:solid rgb(255, 160, 52) 1.5px;
+    border-radius: 4px;
+    width: 100%;
+    height: 100%;
+    padding-left: 1%;
+}
+#root{
+    color:rgb(255, 239, 187);
+    margin-bottom: 3%;
+    margin-top: 1%;
+}
+#titulo{
+    color:rgb(255, 239, 187);
+}
+#informacion{
+    color:rgb(255, 239, 187);
+}
+
+ul{
+    list-style: none;
+}
+
+#usuario{
+    color:rgb(255, 239, 187);
+    grid-area: 1 / 1;
+    border: solid green 1px;
+}
+#enlaces{
+    color:rgb(255, 239, 187);
+    list-style: none;
+    grid-area: 1 / 2;
+    border: solid green 1px;
+}
+.grid{
+    display: grid;
+    grid-template-columns: 2;
+    grid-template-rows: 1;
+    border: solid red 1px;
+    padding: 4px;
+    width: fit-content;
+}
+a{
+    color: rgb(255, 239, 187);
+}
+
+@font-face{
+    font-family: "hack";
+    src: local("Hack-Regular");
+}
