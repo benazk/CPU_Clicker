@@ -17,6 +17,8 @@ public class Juego extends JFrame implements ActionListener {
 	
 	public static int bitsPS = 0;
 	
+	public static int BSoD = 0;
+	
 	public static int mejora1, mejora2, mejora3, mejora4, mejora5;
 	
 	Juego(){
@@ -34,12 +36,12 @@ public class Juego extends JFrame implements ActionListener {
 	    add(btnCPU);
 	    btnCPU.addActionListener(this);
 	    
-	    lblBits = new JLabel("69420");
+	    lblBits = new JLabel("60000");
 	    lblBits.setLocation(175,330);
 	    lblBits.setSize(200,20);
 	    add(lblBits);
 	    
-	    lblBitsPS = new JLabel("69");
+	    lblBitsPS = new JLabel("1");
 	    lblBitsPS.setLocation(175,360);
 	    lblBitsPS.setSize(80,20);
 	    add(lblBitsPS);
@@ -61,42 +63,46 @@ public class Juego extends JFrame implements ActionListener {
 	    btnMejora2.setLocation(900,250);
 	    btnMejora2.setSize(250,60);
 	    add(btnMejora2);
-	    btnMejora1.addActionListener(this);
+	    btnMejora2.addActionListener(this);
 	    
 	    btnMejora3 = new JButton("Mejora3");
 	    btnMejora3.setLocation(900,350);
 	    btnMejora3.setSize(250,60);
 	    add(btnMejora3);
-	    btnMejora1.addActionListener(this);
+	    btnMejora3.addActionListener(this);
 	    
 	    btnMejora4 = new JButton("Mejora4");
 	    btnMejora4.setLocation(900,450);
 	    btnMejora4.setSize(250,60);
 	    add(btnMejora4);
-	    btnMejora1.addActionListener(this);
+	    btnMejora4.addActionListener(this);
 	    
 	    btnMejora5 = new JButton("Mejora5");
 	    btnMejora5.setLocation(900,550);
 	    btnMejora5.setSize(250,60);
 	    add(btnMejora5);
-	    btnMejora1.addActionListener(this);
+	    btnMejora5.addActionListener(this);
 	}
 	
 	public void actionPerformed(ActionEvent e) {
+		System.out.println("hola");
 		JButton accion = (JButton) e.getSource();
-		/*if(accion == btnCPU) {
+		if(accion == btnCPU) {
 			bits = Integer.parseInt(lblBits.getText());
 			bits ++;
 			lblBits.setText(String.valueOf(bits));
-		}*/
+		}
 		if (accion == btnMejora1) {
-			mejora1++;
-			System.out.println("Funcion valor: " + mejora1(mejora1));
-			lblBitsPS.setText(String.valueOf(mejora1(mejora1)));
+			
 		}
-		/*if (accion == btnMejora2) {
-			mejora2++;
+		if (accion == btnMejora2) {
+			if(bits >= Functions.mejora2Price(mejora2)) {
+				mejora2++;
+				
+				lblBitsPS.setText(String.valueOf(Functions.mejora2(mejora2)));
+			}
 		}
+		/*
 		if (accion == btnMejora3) {
 			mejora3++;
 		}
