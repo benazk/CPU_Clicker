@@ -1,11 +1,15 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-public class Juego extends JFrame implements ActionListener {
+public class Juego extends JFrame implements ActionListener, Runnable, MouseListener {
+	
+	public static Thread bitsObtenidos;
 	
 	public static Juego juego;
 	
@@ -16,6 +20,8 @@ public class Juego extends JFrame implements ActionListener {
 	public static long bits = 0;
 	
 	public static int bitsPS = 0;
+	
+	public static int bitsPC = 1;
 	
 	public static int BSoD = 0;
 	
@@ -35,6 +41,7 @@ public class Juego extends JFrame implements ActionListener {
 	    btnCPU.setSize(200,200);
 	    add(btnCPU);
 	    btnCPU.addActionListener(this);
+	    btnCPU.addMouseListener(this);
 	    
 	    lblBits = new JLabel("60000");
 	    lblBits.setLocation(175,330);
@@ -59,7 +66,7 @@ public class Juego extends JFrame implements ActionListener {
 	    btnMejora1.addActionListener(this);
 	    
 	    
-	    btnMejora2 = new JButton("Mejora2");
+	    btnMejora2 = new JButton("Mejora2\n" + + mejora2);
 	    btnMejora2.setLocation(900,250);
 	    btnMejora2.setSize(250,60);
 	    add(btnMejora2);
@@ -85,21 +92,32 @@ public class Juego extends JFrame implements ActionListener {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("hola");
+		System.out.println(Functions.mejora2Price(mejora2));
+		System.out.println(lblBitsPS.getText());
+		bits = Integer.parseInt(lblBits.getText());
 		JButton accion = (JButton) e.getSource();
 		if(accion == btnCPU) {
 			bits = Integer.parseInt(lblBits.getText());
-			bits ++;
+			bits += mejora1;
 			lblBits.setText(String.valueOf(bits));
 		}
 		if (accion == btnMejora1) {
+			if(Integer.parseInt(lblBits.getText()) >= Functions.mejora1Price(mejora1)) {
+				bits -= Functions.mejora1Price(mejora1);
+				lblBits.setText(String.valueOf(bits));
+				mejora1++;
+				bitsPC = Functions.mejora1(mejora1) + 1;
+				
+			}
 			
 		}
 		if (accion == btnMejora2) {
-			if(bits >= Functions.mejora2Price(mejora2)) {
+			if(Integer.parseInt(lblBits.getText()) >= Functions.mejora2Price(mejora2)) {
+				bits -= Functions.mejora2Price(mejora2);
+				lblBits.setText(String.valueOf(bits));
 				mejora2++;
-				
 				lblBitsPS.setText(String.valueOf(Functions.mejora2(mejora2)));
+				btnMejora2.setText("Mejora2 " + mejora2);
 			}
 		}
 		/*
@@ -118,37 +136,56 @@ public class Juego extends JFrame implements ActionListener {
 	public static void main(String[] args) {
 		juego = new Juego();
 		juego.setVisible(true);
+		bitsObtenidos = new Thread(juego);
+		bitsObtenidos.start();
 	}
-	
-	public static int mejora1(int mejora) {
-		int resultado = 0;
-		int bits = Integer.parseInt(lblBitsPS.getText());
-		System.out.println("bits: " + bits);
-		resultado = bits + mejora;
-		System.out.println("Mejora: " + resultado);
+
+	@Override
+	public void run() {
+		while(true) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			bits = Integer.parseInt(lblBits.getText());
+			bitsPS = Integer.parseInt(lblBitsPS.getText());
+			bits += bitsPS;
+			lblBits.setText(String.valueOf(bits));
+		}
 		
-		return resultado;
 	}
-	public static int mejora2() {
-		int resultado = 0;
-		return resultado;
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
-	public static int mejora3() {
-		int resultado = 0;
-		return resultado;
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		
+		
 	}
-	public static int mejora4() {
-		int resultado = 0;
-		return resultado;
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
-	public static int mejora5() {
-		int resultado = 0;
-		return resultado;
-	}
-	public static int BSoD() {
-		int resultado = 0;
-		return resultado;
-	}
 
 }
