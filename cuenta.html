@@ -1,3 +1,15 @@
+
+<script>
+  function comprobarContrasennasIguales(){
+    var pass = document.getElementById("pass").value;
+    var pass2 = document.getElementById("pass2").value;
+    if(pass != pass2){
+      alert("Las contraseñas deben coincidir")
+    }
+    return;
+  
+  }
+</script>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,64 +17,75 @@
   <title>Form</title>
 </head>
 <body>
+  
   <div class="login-wrap">
+    
     <div class="login-html">
-      <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Sign In</label>
-      <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign Up</label>
+      <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Iniciar Sesión</label>
+      <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Crear Cuenta</label>
       <div class="login-form">
+        
         <div class="sign-in-htm">
+          <form name="formIniciarSesion" action="localhost\iniciar.php" method="post" class="form" >
           <div class="group">
             <label for="usuario" class="label">Nombre de usuario</label>
-            <input id="usuario" type="text" class="input">
-          </div>
-          <div class="group">
-            <label for="pass" class="label">Usuario</label>
-            <input id="pass" type="password" class="input" data-type="password">
-          </div>
-          <div class="group">
-            <input type="submit" class="button" value="Sign In">
-          </div>
-          
-        </div>
-        <div class="sign-up-htm">
-          <div class="group">
-            <label for="user" class="label">Nombre</label>
-            <input id="user" type="text" class="input">
-          </div>
-          <div class="group">
-            <label for="pass" class="label">Apellido</label>
-            <input id="pass" type="password" class="input" data-type="password">
-          </div>
-          <div class="group">
-            <label for="pass" class="label">Fecha de nacimiento</label>
-            <input id="pass" type="password" class="input" data-type="password">
-          </div>
-          <div class="group">
-            <label for="pass" class="label">Correo Electrónico</label>
-            <input id="pass" type="text" class="input">
-          </div>
-          <div class="group">
-            <label for="pass" class="label">Nombre de usuario</label>
-            <input id="pass" type="text" class="input">
+            <input id="usuario" type="text" class="input" name="userIniciar">
           </div>
           <div class="group">
             <label for="pass" class="label">Contraseña</label>
-            <input id="pass" type="text" class="input">
+            <input id="pass" type="password" class="input" data-type="password" name="passwordIniciar">
           </div>
           <div class="group">
-            <label for="pass" class="label">Repetir contraseña</label>
-            <input id="pass" type="text" class="input">
+            <input type="submit" class="button" value="Iniciar Sesión">
           </div>
-          <div class="group">
-            <input type="submit" class="button" value="Sign Up">
-          </div>
-          
-          
-            
-          </div>
+        </form>
         </div>
+        
+        <div class="sign-up-htm">
+          <form name="formCrearCuenta" action="localhost\cuenta.php" method="post" class="form" >
+          <div class="group">
+            <label for="name" class="label">Nombre</label>
+            <input id="name" type="text" class="input" name="nombre">
+          </div>
+          <div class="group">
+            <label for="ap" class="label">Apellido</label>
+            <input id="ap" type="text" class="input" name="apellido">
+          </div>
+          <div class="group">
+            <label for="fecha" class="label">Fecha de nacimiento</label>
+            <input id="fecha" type="date" class="input" data-type="date">
+          </div>
+          <div class="group">
+            <label for="correo" class="label">Correo Electrónico</label>
+            <input id="correo" type="text" class="input" name="correo" 
+            pattern="[\w]+@[a-zA-Z]+\.[a-z]{2,4}" title="introduzca un Correo Electrónico válido">
+          </div>
+          <div class="group">
+            <label for="user" class="label">Nombre de usuario</label>
+            <input id="user" type="text" class="input" name="user" pattern="[\w]{5,25}" title="El nombre de usuario debe de ser como mínimo de 5 carácteres">
+          </div>
+          <div class="group">
+            <label for="pass" class="label">Contraseña</label>
+            <input id="pass" type="password" class="input" data-type="password" name="password" 
+            pattern="^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{7,})\S$" title="la contraseña debe tener una mayuscula, minuscula, numero y debe ser como mínimo de 8 de longitud">
+          </div>
+          <div class="group">
+            <label for="pass2" class="label">Repetir contraseña</label>
+            <input id="pass2" type="password" class="input" data-type="password" name="password" pattern="^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{7,})\S$">
+          </div>
+          <div class="group">
+            <input type="submit" class="button" onclick="comprobarContrasennasIguales()" value="Crear Cuenta">
+          </div>
+          
+          
+        </form>
+          </div>
+        
+        </div>
+      
       </div>
     </div>
-  </div>
+ 
+
 </body>
 </html>

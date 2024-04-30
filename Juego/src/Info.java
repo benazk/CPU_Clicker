@@ -1,32 +1,43 @@
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
 
 public class Info extends JFrame implements ActionListener {
-	public static JLabel lblBits = new JLabel("1");
+	
+	
+	
+	
 	
 	public static Info info;
 	
+	JFrame frame = new JFrame("Simple JScrollPane Example"); 
+	
+	
+	JScrollPane barraDesplazadora;
 	Info(){
 		
 		setTitle("CPU Clicker");
 
 	    setSize(500, 300);
 
-	    setUndecorated(true);
-	    
-		getRootPane().setWindowDecorationStyle(JRootPane.NONE);
-
 	    setLayout(null);
 	    
 	    setLocation(533,268);
 	    
-		lblBits.setLocation(0,0);
-		lblBits.setSize(100,20);
-		add(lblBits);
+	    
+	    panel.setBounds(0,0,500,400);        
+	    
+		
+		
+		getContentPane().add(panel);
 		
 	}
 	

@@ -7,8 +7,12 @@ import java.awt.event.MouseListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 public class Juego extends JFrame implements ActionListener, Runnable, MouseListener {
+	
+	public static String[] frases = {"","","","","","","","",""};
 	
 	public static Thread bitsObtenidos;
 	
@@ -25,6 +29,8 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	
 	lblCostoM4 = new JLabel("2000 bits"), lblNombreM4 = new JLabel("Transistores"), lblCantidadM4 = new JLabel("0");
 	
+	public static JLabel lblBitsCant, lblInfo, lblInfoMejora1, lblInfoMejora2, lblInfoMejora3, lblInfoMejora4, lblInfoMejora5, lblInfoMejora6;
+	
 	public static long bits = 0;
 	
 	public static int bitsPS = 0;
@@ -34,6 +40,10 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	public static int BSoD = 0;
 	
 	public static int mejora1, mejora2, mejora3, mejora4, mejora5;
+	
+	JPanel panel = new JPanel(new GridLayout(1,8));
+	
+	JScrollPane panelDesplazador = new JScrollPane();
 	
 	Juego(){
 		setTitle("CPU Clicker");
@@ -51,7 +61,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	    btnCPU.addActionListener(this);
 	    btnCPU.addMouseListener(this);
 	    
-	    lblBits = new JLabel("60000");
+	    lblBits = new JLabel("40000");
 	    lblBits.setLocation(175,330);
 	    lblBits.setSize(200,20);
 	    add(lblBits);
@@ -108,7 +118,36 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	    add(btnMejora4);
 	    btnMejora4.addActionListener(this);
 	  
+	    // Informacion de las mejoras
+	    panel.add(panelDesplazador);
+	    
+	    lblInfo = new JLabel("Hola\n\n\n\nHola");
+		lblInfo.setSize(400,100);
+		lblInfo.setLocation(50,0);
+		panel.add(lblInfo);
+		
+		lblInfoMejora1 = new JLabel("Hola\n\n\n\nHola");
+		lblInfoMejora1.setSize(400,100);
+		lblInfoMejora1.setLocation(50,0);
+		panel.add(lblInfoMejora1);
+		
+		lblInfoMejora1 = new JLabel("Hola\n\n\n\nHola");
+		lblInfoMejora1.setSize(400,100);
+		lblInfoMejora1.setLocation(50,0);
+		panel.add(lblInfoMejora1);
+		
+		lblInfoMejora1 = new JLabel("Hola\n\n\n\nHola");
+		lblInfoMejora1.setSize(400,100);
+		lblInfoMejora1.setLocation(50,0);
+		panel.add(lblInfoMejora1);
+		
+		add(panel);
+		
+	
+	
 	}
+	
+	
 	
 	public void actionPerformed(ActionEvent e) {
 		bits = Integer.parseInt(lblBits.getText());
@@ -117,6 +156,9 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			bits = Integer.parseInt(lblBits.getText());
 			bits += bitsPC;
 			lblBits.setText(String.valueOf(bits));
+		}
+		if(accion == btnBSoD) {
+			
 		}
 		if (accion == btnMejora1) {
 			mejora1 = Integer.parseInt(lblCantidadM1.getText());
