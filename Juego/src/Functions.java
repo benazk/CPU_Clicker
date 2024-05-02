@@ -1,3 +1,11 @@
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Functions {
 
 	public static int precioFuncion(int precioBase, int cantMejoras)
@@ -71,6 +79,62 @@ public class Functions {
 		return cantFinal;
 	}
 
+	public static void cargarDrivers() {
+		try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+        } catch (ClassNotFoundException e) {
+
+            e.printStackTrace();
+
+        }
+	}
+	public static String encriptacion(String contrasena) {
+		String contrasenaEncriptada = "";
+		try   
+	        {  
+	            /* Instancia MessageDigest para MD5 */  
+	            MessageDigest m = MessageDigest.getInstance("MD5");  
+	              
+	            /* Añadir bytes de texto de la contraseña para digerir con MD5. */  
+	            m.update(contrasena.getBytes());  
+	              
+	            /* Convertir el valor hash a bytes */   
+	            byte[] bytes = m.digest();  
+	              
+	            /* El array de bytes tiene bytes en forma decimal. Conversion a formato hexadecimal. */  
+	            StringBuilder s = new StringBuilder();  
+	            for(int i=0; i< bytes.length ;i++)  
+	            {  
+	                s.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));  
+	            }  
+	              
+	            /* Completar contraseña hash en formato hexadecimal  */  
+	            contrasenaEncriptada = s.toString();  
+	        }   
+	        catch (NoSuchAlgorithmException e)   
+	        {  
+	            e.printStackTrace(); 
+	        }
+		return contrasenaEncriptada;  
+	}
 	
+	public static int idUsuario() {
+		int idUsuario = 0;
+		try {
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cpuclicker", "root", "");
+			PreparedStatement stmtIdUser = conn.prepareStatement(
+					"SELECT idUsuario FROM usuario WHERE nombreUsuario = " + "'" + Menu.usuario + "';");
+			ResultSet rsUser = stmtIdUser.executeQuery();
+			if (rsUser.next()) {
+				idUsuario = rsUser.getInt("id");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return idUsuario;
+	}
 
 }
