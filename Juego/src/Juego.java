@@ -20,6 +20,8 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	public static String[] frases = { "", "", "", "", "", "", "", "", "" };
 
 	public static Thread bitsObtenidos;
+	
+	public static Thread extras;
 
 	public static Juego juego;
 
@@ -47,6 +49,8 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	public static int BSoD = 0;
 
 	public static long BSoDPrice = 8000000 * (5 * (1 + BSoD));
+	public static JButton btnPararTiempo = new JButton("Bonus"), btnBitsGratis = new JButton("Bonus"), btnPotenciadorBits = new JButton("Bonus"); 
+	public static JButton bonuses[] = {btnPararTiempo,btnBitsGratis, btnPotenciadorBits };
 	
 	public static JLabel lblBSoDNombre = new JLabel("Blue Screen Of Death"), lblBSoD_Cant = new JLabel(String.valueOf(BSoD)),
 	lblBSoD_Precio = new JLabel(String.valueOf(BSoDPrice));
@@ -219,30 +223,62 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			}
 		}
 		if (accion == btnBSoD) {
+			// Codigo para reiniciar en el caso de un BSoD
 			if(bits > Integer.parseInt(lblBSoD_Precio.getText())) {
-				
-				BSoD++;
-				lblBSoD_Cant.setText(String.valueOf(BSoD));
-				
-				bits = 0;
-				lblBits.setText(String.valueOf(bits));
-				
-				bitsPS = 0;
-				lblBitsPS.setText(String.valueOf(bitsPS));
-				
-				bitsPC = 1;
+				try {
+					conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cpuclicker", "root", "");
+					
+					
+					BSoD++;
+					lblBSoD_Cant.setText(String.valueOf(BSoD));
+					PreparedStatement stmtBSoD = conn.prepareStatement("UPDATE estadisticas SET BSoD = BSoD + 1  WHERE idUsuario = " + "'" + Functions.idUsuario() + "';");
+					stmtBSoD.executeUpdate();
+					
+					bits = 0;
+					lblBits.setText(String.valueOf(bits));
+					PreparedStatement stmtbits = conn.prepareStatement("UPDATE estadisticas SET bitsActuales = 0  WHERE idUsuario = " + "'" + Functions.idUsuario() + "';");
+					stmtbits.executeUpdate();
+					
+					bitsPS = 0;
+					lblBitsPS.setText(String.valueOf(bitsPS));
+					PreparedStatement stmtbitsPS = conn.prepareStatement("UPDATE estadisticas SET bitsPS = 0  WHERE idUsuario = " + "'" + Functions.idUsuario() + "';");
+					stmtbitsPS.executeUpdate();
+					
+					bitsPC = 1;
 
-				mejora1 = 0;
-				lblCantidadM1.setText(String.valueOf(mejora1));
+					mejora1 = 0;
+					lblCantidadM1.setText(String.valueOf(mejora1));
+					
+					mejora2 = 0;
+					lblCantidadM2.setText(String.valueOf(mejora2));
+					
+					mejora3 = 0;
+					lblCantidadM3.setText(String.valueOf(mejora3));
+					
+					mejora4 = 0;
+					lblCantidadM4.setText(String.valueOf(mejora4));
+					
+					PreparedStatement stmtMejoras1 = conn.prepareStatement("UPDATE mejoras SET cantidadTicks = 0 WHERE idUsuario = " + "'" + Functions.idUsuario() + "';");
+					stmtMejoras1.executeUpdate();
+					PreparedStatement stmtMejoras2 = conn.prepareStatement("UPDATE mejoras SET cantidadCache = 0 WHERE idUsuario = " + "'" + Functions.idUsuario() + "';");
+					stmtMejoras2.executeUpdate();
+					PreparedStatement stmtMejoras3 = conn.prepareStatement("UPDATE mejoras SET cantidadFPS = 0 WHERE idUsuario = " + "'" + Functions.idUsuario() + "';");
+					stmtMejoras3.executeUpdate();
+					PreparedStatement stmtMejoras4 = conn.prepareStatement("UPDATE mejoras SET cantidadTransistores = 0 WHERE idUsuario = " + "'" + Functions.idUsuario() + "';");
+					stmtMejoras4.executeUpdate();
+					PreparedStatement stmtMejorasSum = conn.prepareStatement("UPDATE mejoras SET sumMejoras = 0 WHERE idUsuario = " + "'" + Functions.idUsuario() + "';");
+					stmtMejorasSum.executeUpdate();
+					
+					lblCostoM1.setText(String.valueOf(Functions.mejora1Price(mejora1)) + " bits");
+					lblCostoM2.setText(String.valueOf(Functions.mejora2Price(mejora2)) + " bits");
+					lblCostoM3.setText(String.valueOf(Functions.mejora3Price(mejora3)) + " bits");
+					lblCostoM4.setText(String.valueOf(Functions.mejora4Price(mejora4)) + " bits");
+					
+				} catch (SQLException e1) {
+					
+					e1.printStackTrace();
+				}  
 				
-				mejora2 = 0;
-				lblCantidadM2.setText(String.valueOf(mejora2));
-				
-				mejora3 = 0;
-				lblCantidadM3.setText(String.valueOf(mejora3));
-				
-				mejora4 = 0;
-				lblCantidadM4.setText(String.valueOf(mejora4));
 				
 			}
 		}
@@ -264,7 +300,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			int BSoD_BBDD = 0;
 
 			try {
-				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/hizkunlagun", "root", "");
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cpuclicker", "root", "");
 				PreparedStatement stmtMejoras = conn
 						.prepareStatement("SELECT * FROM mejoras WHERE idUsuario = " + "'" + idUsuario + "';");
 				ResultSet rsMejoras = stmtMejoras.executeQuery();
@@ -296,7 +332,9 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		}
 		juego.setVisible(true);
 		bitsObtenidos = new Thread(juego);
+		extras = new Thread(juego);
 		bitsObtenidos.start();
+		extras.start();
 	}
 
 	@Override
@@ -304,18 +342,63 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		while (true) {
 			try {
 				Thread.sleep(100);
+				bits = Integer.parseInt(lblBits.getText());
+				bitsPS = Integer.parseInt(lblBitsPS.getText());
+				if (bits > 10) {
+					bits += (int) Math.floor(bitsPS / 10);
+				} else {
+					bits += bitsPS;
+				}
+				lblBits.setText(String.valueOf(bits));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			bits = Integer.parseInt(lblBits.getText());
-			bitsPS = Integer.parseInt(lblBitsPS.getText());
-			if (bits > 10) {
-				bits += (int) Math.floor(bitsPS / 10);
-			} else {
-				bits += bitsPS;
+			
+			
+			int bonus = (int) Math.floor(Math.random()*600);
+			boolean estadoBonus = false;
+			switch(bonus) {
+			case 1:
+				if(!estadoBonus) {
+					bonuses[0].setSize(80,60);
+					bonuses[0].setLocation(Functions.posicionRandomEnRango(10,600),Functions.posicionRandomEnRango(10,750));
+					add(bonuses[0]);
+					
+					try {
+						Thread.sleep(15000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+			case 2:
+				if(!estadoBonus) {
+					bonuses[1].setSize(80,60);
+					bonuses[1].setLocation(Functions.posicionRandomEnRango(10,600),Functions.posicionRandomEnRango(10,750));
+					add(bonuses[1]);
+					try {
+						Thread.sleep(15000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			case 3:
+				if(!estadoBonus) {
+					bonuses[2].setSize(80,60);
+					bonuses[2].setLocation(Functions.posicionRandomEnRango(10,600),Functions.posicionRandomEnRango(10,750));
+					add(bonuses[2]);
+					try {
+						Thread.sleep(15000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
-			lblBits.setText(String.valueOf(bits));
+			
 		}
 
 	}
