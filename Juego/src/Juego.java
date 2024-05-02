@@ -36,8 +36,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			lblCostoM4 = new JLabel("2000 bits"), lblNombreM4 = new JLabel("Transistores"),
 			lblCantidadM4 = new JLabel("0");
 
-	public static JLabel lblBitsCant, lblInfo, lblInfoMejora1, lblInfoMejora2, lblInfoMejora3, lblInfoMejora4,
-			lblInfoMejora5, lblInfoMejora6;
+	public static JLabel lblBitsCant, lblInfo, lblInfoMejora1, lblInfoMejora2, lblInfoMejora3, lblInfoMejora4;
 
 	public static long bits = 0;
 
@@ -52,7 +51,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	public static JLabel lblBSoDNombre = new JLabel("Blue Screen Of Death"), lblBSoD_Cant = new JLabel(String.valueOf(BSoD)),
 	lblBSoD_Precio = new JLabel(String.valueOf(BSoDPrice));
 	
-	public static int mejora1, mejora2, mejora3, mejora4, mejora5;
+	public static int mejora1, mejora2, mejora3, mejora4;
 
 	JPanel panel = new JPanel(new GridLayout(1, 8));
 
@@ -76,7 +75,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		btnCPU.addActionListener(this);
 		btnCPU.addMouseListener(this);
 
-		lblBits = new JLabel("40000");
+		lblBits = new JLabel("40000000");
 		lblBits.setLocation(175, 330);
 		lblBits.setSize(200, 20);
 		add(lblBits);
@@ -229,16 +228,22 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				lblBits.setText(String.valueOf(bits));
 				
 				bitsPS = 0;
-
-				bitsPC = 1;
+				lblBitsPS.setText(String.valueOf(bitsPS));
 				
-				mejora1 = 0;
+				bitsPC = 1;
 
+				mejora1 = 0;
+				lblCantidadM1.setText(String.valueOf(mejora1));
+				
 				mejora2 = 0;
+				lblCantidadM2.setText(String.valueOf(mejora2));
 				
 				mejora3 = 0;
-
+				lblCantidadM3.setText(String.valueOf(mejora3));
+				
 				mejora4 = 0;
+				lblCantidadM4.setText(String.valueOf(mejora4));
+				
 			}
 		}
 		
