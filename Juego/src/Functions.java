@@ -1,20 +1,21 @@
 public class Functions {
 
-	public static int precioFuncion(int precioBase, int cantMejoras)
+	public static int fibonacci(int n, int a, int b)
 	{
-		int multiplier = 0;
-		for(int i = 0; i < cantMejoras; i++) {
-			if (i%3 == 0) {
-				multiplier += 1;
-			}
-			precioBase += (int) Math.floor(precioBase/4) + multiplier;
-		}
-		return precioBase;
+	    int c, i;
+	    if (n == 0)
+	        return a;
+	    for (i = 2; i <= n; i++) {
+	        c = a + b;
+	        a = b;
+	        b = c;
+	    }
+	    return b;
 	}
 	
 	public static int mejora1Price(int cantMej) {
 		int precioBase = 5;
-		int precioFinal = precioFuncion(precioBase,cantMej);;
+		int precioFinal = fibonacci(cantMej,precioBase,precioBase*2);
 		return precioFinal;
 	}
 	
@@ -27,8 +28,8 @@ public class Functions {
 	}
 	
 	public static int mejora2Price(int cantMej) {
-		int precioBase = 40;
-		int precioFinal = precioFuncion(precioBase,cantMej);
+		int precioBase = 20;
+		int precioFinal = fibonacci(cantMej,precioBase,precioBase*2);
 		return precioFinal;
 
 	}
@@ -41,36 +42,16 @@ public class Functions {
 		return cantFinal;
 	}
 
-	public static int mejora3Price(int cantMej) {
-		int precioBase = 300;
-		int precioFinal = precioFuncion(precioBase,cantMej);
-		return precioFinal;
+	public static void mejora3() {
 
 	}
-	
-	public static int mejora3(int cantMej) {
-		int cantFinal = 1;
-		for(int i = 0; i <= cantMej * (1+Juego.BSoD); i++) {
-			cantFinal += i*8;
-		}
-		return cantFinal;
-	}
 
-	public static int mejora4Price(int cantMej) {
-		int precioBase = 2000;
-		int precioFinal = precioFuncion(precioBase,cantMej);
-		return precioFinal;
+	public static void mejora4() {
 
 	}
-	
-	public static int mejora4(int cantMej) {
-		int cantFinal = 1;
-		for(int i = 0; i <= cantMej * (1+Juego.BSoD); i++) {
-			cantFinal += i*50;
-		}
-		return cantFinal;
-	}
 
-	
+	public static void mejora5() {
+
+	}
 
 }
