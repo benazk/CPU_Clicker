@@ -1,13 +1,30 @@
-
+<?php
+include("cuenta.php");
+include("iniciar.php");
+?>
 <script>
   function comprobarContrasennasIguales(){
     var pass = document.getElementById("pass").value;
     var pass2 = document.getElementById("pass2").value;
     if(pass != pass2){
       alert("Las contraseñas deben coincidir")
+      return false;
     }
-    return;
+    
   
+  }
+  function comprobarCamposCompletos(){
+    var pass = document.getElementById("pass").value;
+    var pass2 = document.getElementById("pass2").value;
+    var nombre = document.getElementById("nombre").value
+    var apellidos = document.getElementById("apellidos").value
+    var date = document.getElementById("date").value
+    var email = document.getElementById("email").value
+    if(pass == null || pass2 == null || nombre == null || apellidos == null || date == null || email == null){
+      alert("Todos los campos tienen que estar completos")
+      return false;
+    }
+    
   }
 </script>
 <!DOCTYPE html>
@@ -26,14 +43,14 @@
       <div class="login-form">
         
         <div class="sign-in-htm">
-          <form name="formIniciarSesion" action="localhost\iniciar.php" method="post" class="form" >
+          <form name="formIniciarSesion" action="iniciar.php" method="post" class="form" >
           <div class="group">
             <label for="usuario" class="label">Nombre de usuario</label>
             <input id="usuario" type="text" class="input" name="userIniciar">
           </div>
           <div class="group">
-            <label for="pass" class="label">Contraseña</label>
-            <input id="pass" type="password" class="input" data-type="password" name="passwordIniciar">
+            <label for="passIniciar" class="label">Contraseña</label>
+            <input id="passIniciar" type="password" class="input" data-type="password" name="passwordIniciar">
           </div>
           <div class="group">
             <input type="submit" class="button" value="Iniciar Sesión">
@@ -42,22 +59,22 @@
         </div>
         
         <div class="sign-up-htm">
-          <form name="formCrearCuenta" action="localhost\cuenta.php" method="post" class="form" >
+          <form name="formCrearCuenta" action="cuenta.php" method="post" class="form" onsubmit="return !!(comprobarContrasennasIguales() & comprobarCamposCompletos());">
           <div class="group">
-            <label for="name" class="label">Nombre</label>
-            <input id="name" type="text" class="input" name="nombre">
+            <label for="nombre" class="label">Nombre</label>
+            <input id="nombre" type="text" class="input" name="nombre">
           </div>
           <div class="group">
-            <label for="ap" class="label">Apellido</label>
-            <input id="ap" type="text" class="input" name="apellido">
+            <label for="apellidos" class="label">Apellido</label>
+            <input id="apellidos" type="text" class="input" name="apellidos">
           </div>
           <div class="group">
-            <label for="fecha" class="label">Fecha de nacimiento</label>
-            <input id="fecha" type="date" class="input" data-type="date">
+            <label for="date" class="label">Fecha de nacimiento</label>
+            <input id="date" type="date" class="input" data-type="date" name="date">
           </div>
           <div class="group">
-            <label for="correo" class="label">Correo Electrónico</label>
-            <input id="correo" type="text" class="input" name="correo" 
+            <label for="email" class="label">Correo Electrónico</label>
+            <input id="email" type="text" class="input" name="email" 
             pattern="[\w]+@[a-zA-Z]+\.[a-z]{2,4}" title="introduzca un Correo Electrónico válido">
           </div>
           <div class="group">
