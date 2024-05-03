@@ -15,10 +15,20 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+@SuppressWarnings("serial")
 public class Juego extends JFrame implements ActionListener, Runnable, MouseListener {
 
-	public static String[] frases = { "", "", "", "", "", "", "", "", "" };
+	public static String[] frasesTexto = { "<html>los ticks son una manera de medir el tiempo utilizada en el juego Minecraft, cada Tick equivale a 50 milisegundos</html>", 
+			"<html>El cache es un componente que guarda datos para que al volver a acceder a ellos, lo haga más rápido</html>", 
+			"<html>FPS significa Fotogramas por Segundo, se utiliza para medir cuantas imágenes muestra por segundo un dispositivo</html>", 
+			"<html>El transistor es el dispositivo que lleva la corriente por el procesador</html>", 
+			"<html>Los hercios son la unidad de medida con la que se expresa la frecuencia con la que un evento sucede durante un tiempo determinado</html>", 
+			"<html>Es una placa fina de un material semiconductor (conductor o aislante de corriente), con la que construyen microcircuitos</html>", 
+			"<html>Cron es un servicio de Linux que permite ejecutar comandos en un momento determinado, por ejemplo, cada minuto, día, semana o mes</html>", 
+			"<html>Cache: Un espacio de memoria que almacena los datos de manera temporal para que el programa que los requiera no se quede sin datos durante una transferencia de dato</html>"};
 
+	public static JLabel frases = new JLabel();
+	
 	public static Thread bitsObtenidos;
 	
 	public static Thread extras;
@@ -49,8 +59,12 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	public static int BSoD = 0;
 
 	public static long BSoDPrice = 8000000 * (5 * (1 + BSoD));
-	public static JButton btnPararTiempo = new JButton("Bonus"), btnBitsGratis = new JButton("Bonus"), btnPotenciadorBits = new JButton("Bonus"); 
+	
+	public static JButton btnPararTiempo = new JButton("ZaWarudo"), btnBitsGratis = new JButton("FreeFood"), btnPotenciadorBits = new JButton("MoarGalletas"); 
+	
 	public static JButton bonuses[] = {btnPararTiempo,btnBitsGratis, btnPotenciadorBits };
+	
+	public static boolean estadoBonus;
 	
 	public static JLabel lblBSoDNombre = new JLabel("Blue Screen Of Death"), lblBSoD_Cant = new JLabel(String.valueOf(BSoD)),
 	lblBSoD_Precio = new JLabel(String.valueOf(BSoDPrice));
@@ -63,12 +77,14 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 	public static Connection conn;
 
+	
+	
 	Juego() {
 		setTitle("CPU Clicker");
 
 		setSize(1366, 768);
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		setLayout(null);
 
@@ -88,7 +104,13 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		lblBitsPS.setLocation(175, 360);
 		lblBitsPS.setSize(80, 20);
 		add(lblBitsPS);
-
+		
+		frases.setText(frasesTexto[(int)Math.floor(Math.random()*7)]);
+		frases.setSize(350,45);
+		frases.setLocation(400,100);
+		add(frases);
+		frases.addMouseListener(this);
+		
 		btnBSoD = new JButton();
 		btnBSoD.setLayout(new GridLayout(2, 2));
 		btnBSoD.add(lblBSoDNombre);
@@ -138,7 +160,18 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		btnMejora4.setSize(250, 60);
 		add(btnMejora4);
 		btnMejora4.addActionListener(this);
-
+		
+		add(bonuses[0]);
+		bonuses[0].setVisible(false);
+		bonuses[0].addActionListener(this);
+		bonuses[0].addMouseListener(this);
+		bonuses[1].addActionListener(this);
+		add(bonuses[1]);
+		bonuses[1].setVisible(false);
+		bonuses[2].addActionListener(this);
+		add(bonuses[2]);
+		bonuses[2].setVisible(false);
+		
 		/* Informacion de las mejoras
 		panel.add(panelDesplazador);
 
@@ -173,9 +206,6 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			bits = Integer.parseInt(lblBits.getText());
 			bits += bitsPC;
 			lblBits.setText(String.valueOf(bits));
-		}
-		if (accion == btnBSoD) {
-
 		}
 		if (accion == btnMejora1) {
 			mejora1 = Integer.parseInt(lblCantidadM1.getText());
@@ -282,13 +312,82 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				
 			}
 		}
+		if(accion == bonuses[0]) {
+				bonuses[0].setVisible(false);
+				estadoBonus = false;
+			
+		}
+		if(accion == bonuses[1]) {
+			bonuses[1].setVisible(false);
+			bits += (int) Integer.parseInt(lblBitsPS.getText()) * 300;
+			lblBits.setText(String.valueOf(bits));
+			estadoBonus = false;
+		}
+		if(accion == bonuses[2]) {
+			bonuses[2].setVisible(false);
+			estadoBonus = false;
+		}
+
 		
 
 	}
 
-	public static void main(String[] args) {
+	
+
+	@Override
+	public void run() {
+		while (true) {
+			try {
+				Thread.sleep(100);
+				bits = Integer.parseInt(lblBits.getText());
+				bitsPS = Integer.parseInt(lblBitsPS.getText()) * (BSoD + 1);
+				if (bits > 10) {
+					bits += (int) Math.floor(bitsPS / 10);
+				} else {
+					bits += bitsPS;
+				}
+				lblBits.setText(String.valueOf(bits));
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			int bonus = (int) Math.floor(Math.random()*60);
+			estadoBonus = false;
+			switch(bonus) {
+			case 61:
+				if(!estadoBonus) {
+					bonuses[0].setSize(80,60);
+					bonuses[0].setLocation(Functions.posicionRandomEnRango(10,600),Functions.posicionRandomEnRango(10,750));
+					bonuses[0].setVisible(true);
+					estadoBonus = true;
+				}
+			case 2:
+				if(!estadoBonus) {
+					bonuses[1].setSize(80,60);
+					bonuses[1].setLocation(Functions.posicionRandomEnRango(10,600),Functions.posicionRandomEnRango(10,750));
+					bonuses[1].setVisible(true);
+					estadoBonus = true;
+
+				}
+			case 62:
+				if(!estadoBonus) {
+					bonuses[2].setSize(80,60);
+					bonuses[2].setLocation(Functions.posicionRandomEnRango(10,600),Functions.posicionRandomEnRango(10,750));
+					bonuses[2].setVisible(true);
+					estadoBonus = true;
+					
+				}
+			}
+			
+		}
+
+	}
+
+	public static void main(String[]args) {
 		juego = new Juego();
-		String filePath = "game1.wav";
+		String filePath = "timestop.wav";
 		Functions.playMusic(filePath);
 		// Cargar datos de usuario si el usuario está iniciado sesión
 		if (Menu.sesion) {
@@ -340,98 +439,42 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	}
 
 	@Override
-	public void run() {
-		while (true) {
-			try {
-				Thread.sleep(100);
-				bits = Integer.parseInt(lblBits.getText());
-				bitsPS = Integer.parseInt(lblBitsPS.getText());
-				if (bits > 10) {
-					bits += (int) Math.floor(bitsPS / 10);
-				} else {
-					bits += bitsPS;
-				}
-				lblBits.setText(String.valueOf(bits));
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			
-			int bonus = (int) Math.floor(Math.random()*600);
-			boolean estadoBonus = false;
-			switch(bonus) {
-			case 1:
-				if(!estadoBonus) {
-					bonuses[0].setSize(80,60);
-					bonuses[0].setLocation(Functions.posicionRandomEnRango(10,600),Functions.posicionRandomEnRango(10,750));
-					add(bonuses[0]);
-					
-					try {
-						Thread.sleep(15000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-				}
-			case 2:
-				if(!estadoBonus) {
-					bonuses[1].setSize(80,60);
-					bonuses[1].setLocation(Functions.posicionRandomEnRango(10,600),Functions.posicionRandomEnRango(10,750));
-					add(bonuses[1]);
-					try {
-						Thread.sleep(15000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			case 3:
-				if(!estadoBonus) {
-					bonuses[2].setSize(80,60);
-					bonuses[2].setLocation(Functions.posicionRandomEnRango(10,600),Functions.posicionRandomEnRango(10,750));
-					add(bonuses[2]);
-					try {
-						Thread.sleep(15000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-			
-		}
-
-	}
-
-	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-
+		// Bonus de clicks por segundo exponenciales
+		int clicks = 0;
+			if(e.getSource() == btnCPU && e.getClickCount() >= 1) {
+				clicks++;
+				bits += bitsPC * (clicks ^ 2);
+				System.out.println(bitsPC * (clicks ^ 2));
+			}
+			if(e.getSource() == frases) {
+				frases.setText(frasesTexto[(int)Math.floor(Math.random()*7)]);
+			}
+		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }

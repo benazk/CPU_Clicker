@@ -156,7 +156,7 @@ public class Functions {
 				Clip clip = AudioSystem.getClip();
 				clip.open(audioInput);
 				clip.start();
-				clip.loop(1);
+				clip.loop(2147000000);
 
 			} else {
 				System.out.println("Couldn't find Music file");

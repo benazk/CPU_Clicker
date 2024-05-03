@@ -23,6 +23,8 @@ public class InicioSesion extends JFrame implements  EventListener, ActionListen
 	JButton btnConfirmar;
 	JPasswordField pswContraseña;
 	
+	
+	
 	InicioSesion(){
 		
 		setTitle("Inicio de sesión");
@@ -116,15 +118,15 @@ public class InicioSesion extends JFrame implements  EventListener, ActionListen
 		
 	
 	}
-
-
-	public static void main(String[] args) {
+	
+	public static void main(String[]args) {
 		Functions.cargarDrivers();
 		InicioSesion sesion = new InicioSesion();
 		sesion.setVisible(true);
 		sesion.setResizable(false);
-
 	}
+
+	
 
 }
 

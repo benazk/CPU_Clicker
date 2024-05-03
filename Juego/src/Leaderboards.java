@@ -23,6 +23,8 @@ public class Leaderboards extends JFrame implements ActionListener {
 	JTable tblDatos;
     JScrollPane sp;
 	
+    
+    
 	Leaderboards(){
 		
 			 setLayout(null);	
@@ -83,13 +85,12 @@ public class Leaderboards extends JFrame implements ActionListener {
          }
 
 	}
-
-	public static void main(String[] args) {
+	
+	public static void main(String[]args) {
 		Leaderboards Leaderboards = new Leaderboards();
 		Leaderboards.setVisible(true);
-		
-		
-		
 	}
+
+	
 
 }
