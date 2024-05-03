@@ -54,13 +54,13 @@ public class Info extends JFrame implements ActionListener {
 	    panel.add(lblActuales);
 	    lblMaximos = new JLabel("Bits Máximos: Inicia sesión para ver los bits máximos");
 	    panel.add(lblMaximos);
-	    lblPS = new JLabel("Bits Por Segundo:" + Juego.bitsPS * (Juego.BSoD + 1) + " bits");
+	    lblPS = new JLabel("Bits Por Segundo: " + Juego.bitsPS * (Juego.BSoD + 1) + " bits");
 	    panel.add(lblPS);
-	    lblPS_Raw = new JLabel("Bits Por Segundo:" + Juego.bitsPS + " bits");
+	    lblPS_Raw = new JLabel("Bits Por Segundo: " + Juego.bitsPS + " bits");
 	    panel.add(lblPS_Raw);
-	    lblSumMejoras = new JLabel("Mejoras Totales:" + (Juego.mejora1 + Juego.mejora2 + Juego.mejora3 + Juego.mejora4));
+	    lblSumMejoras = new JLabel("Mejoras Totales: " + (Juego.mejora1 + Juego.mejora2 + Juego.mejora3 + Juego.mejora4));
 	    panel.add(lblSumMejoras);
-	    lblBitsPC = new JLabel("Bits Por Click:" + Juego.bitsPC + " bits");
+	    lblBitsPC = new JLabel("Bits Por Click: " + Juego.bitsPC + " bits");
 	    panel.add(lblBitsPC);
 	    lblVersion = new JLabel("Versión 0.5");
 	    panel.add(lblVersion);
