@@ -1,3 +1,4 @@
+import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -5,6 +6,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 public class Functions {
 
@@ -143,6 +148,23 @@ public class Functions {
 		
 		return random;
 	}
-	
+	public static void playMusic(String musicLoc) {
+		try {
+			File musicPath = new File(musicLoc);
+			if (musicPath.exists()) {
+				AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+				Clip clip = AudioSystem.getClip();
+				clip.open(audioInput);
+				clip.start();
+				clip.loop(1);
+
+			} else {
+				System.out.println("Couldn't find Music file");
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+	}
 
 }

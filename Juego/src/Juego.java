@@ -288,6 +288,8 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 	public static void main(String[] args) {
 		juego = new Juego();
+		String filePath = "game1.wav";
+		Functions.playMusic(filePath);
 		// Cargar datos de usuario si el usuario está iniciado sesión
 		if (Menu.sesion) {
 			int idUsuario = Functions.idUsuario();
