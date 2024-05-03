@@ -136,5 +136,13 @@ public class Functions {
 		}
 		return idUsuario;
 	}
+	
+	public static int posicionRandomEnRango (int min, int max) {
+		int random = 0;
+		random = (int) Math.floor(Math.random() * (max - min) + min);
+		
+		return random;
+	}
+	
 
 }
