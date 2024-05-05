@@ -25,35 +25,44 @@ public class Menu extends JFrame implements ActionListener {
 
 	public static JButton btnJugar, btnScoreBoard, btnIniciarSesion, btnCerrarSesion, btnAtras;
 	JLabel lblNombre;
-	
-	public static String usuario ="";
-	
+
+	public static String usuario = null;
+
 	public static boolean sesion = false;
-	
+
 	Menu() {
-		
-		
-		try {
-		    //create the font to use. Specify the size!
-			System.out.println("hola");
-		    Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("font\\JetBrainsMono-Light.ttf")).deriveFont(20f);
-		    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		    //register the font
-		    ge.registerFont(customFont);
+		File file = new File("sesion.txt");
+		BufferedReader reader;
+	    try {
+	    	reader = new BufferedReader(new FileReader(file));
+	    	usuario = reader.readLine();
+	    	sesion = Boolean.parseBoolean(reader.readLine());
+			
 		} catch (IOException e) {
-		    e.printStackTrace();
-		} catch(FontFormatException e) {
-		    e.printStackTrace();
-		
-	}
-		
-		
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			// create the font to use. Specify the size!
+			System.out.println("hola");
+			Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("font\\JetBrainsMono-Light.ttf"))
+					.deriveFont(20f);
+			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			// register the font
+			ge.registerFont(customFont);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (FontFormatException e) {
+			e.printStackTrace();
+
+		}
+
 		setLayout(null);
 		setTitle("Menú");
 		setLayout(new GridLayout(6, 1));
 
 		setVisible(true);
-		setSize(1966, 768);
+		setSize(1366, 768);
 
 		Container frame = getContentPane();
 
@@ -107,7 +116,13 @@ public class Menu extends JFrame implements ActionListener {
 		btnIniciarSesion.setForeground(new Color(255, 255, 255));
 		btnIniciarSesion.setFont(new Font("JetBrainsMono-Light", Font.TRUETYPE_FONT, 30));
 		btnIniciarSesion.setBackground(new Color(30, 30, 30));
-
+		if (sesion) {
+			btnIniciarSesion.setEnabled(false);
+		}
+		else {
+			btnIniciarSesion.setEnabled(true);
+		}
+		
 //Boton Cerrar Sesion
 		btnCerrarSesion = new JButton("Cerrar Sesion");
 		add(btnCerrarSesion);
@@ -118,6 +133,12 @@ public class Menu extends JFrame implements ActionListener {
 		btnCerrarSesion.setForeground(new Color(255, 255, 255));
 		btnCerrarSesion.setFont(new Font("JetBrainsMono-Light", Font.TRUETYPE_FONT, 30));
 		btnCerrarSesion.setBackground(new Color(30, 30, 30));
+		if (sesion) {
+			btnCerrarSesion.setEnabled(true);
+		}
+		else {
+			btnCerrarSesion.setEnabled(false);
+		}
 
 //Boton Atras
 		btnAtras = new JButton("Atras");
@@ -139,26 +160,34 @@ public class Menu extends JFrame implements ActionListener {
 			Thread contador = new Thread(juego);
 			contador.start();
 		}
-// else if(elegido == btnCerrarSesion) {
-// CerrarSesion cuenta = new CerrarSesion();
-// cuenta.setVisible(true);
-
-		else if (elegido == btnIniciarSesion) {
+		else if(elegido == btnCerrarSesion) {
+			sesion = false;
+			usuario = null;
+			Functions.mantenerSesiónLocal();
+			btnIniciarSesion.setEnabled(true);
+			btnCerrarSesion.setEnabled(false);
+		}
+		if (elegido == btnIniciarSesion) {
 			InicioSesion sesion = new InicioSesion();
 			sesion.setVisible(true);
-		} else if (elegido == btnScoreBoard) {
+		}
+		
+		if (elegido == btnScoreBoard) {
 			Leaderboards Leaderboards = new Leaderboards();
 			Leaderboards.setVisible(true);
 		}
+		
 
 	}
 
-		
-
 	public static void main(String[] args) {
-
-
 		Menu play = new Menu();
+		System.out.println(sesion + usuario);
+		if(sesion) {
+			btnCerrarSesion.setEnabled(true);
+		}
+		
+	    
 
 	}
 

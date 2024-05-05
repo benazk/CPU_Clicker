@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -17,7 +18,7 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollBar;
 
 public class Info extends JFrame implements ActionListener {
-	public static JLabel lblActuales, lblMaximos, lblPS, lblPS_Raw, lblSumMejoras, lblBitsPC, lblVersion;
+	public static JLabel lblTitulo, lblActuales, lblMaximos, lblPS, lblPS_Raw, lblSumMejoras, lblBitsPC, lblMins, lblVersion;
 	
 	public static JLabel lblMargin;
 	
@@ -29,7 +30,11 @@ public class Info extends JFrame implements ActionListener {
 	
 	int idUsuario = Functions.idUsuario();
 	
+	private static final DecimalFormat df = new DecimalFormat("0.00");
+	
 	Connection conn;
+	
+	
 	
 	Info(){
 		
@@ -43,13 +48,16 @@ public class Info extends JFrame implements ActionListener {
 
 	    setLayout(null);
 	    
-	    panel.setLayout(new GridLayout(7,1));
+	    panel.setLayout(new GridLayout(9,1));
 	    
 	    add(panel);
 	    
 	    lblMargin = new JLabel();
 	    lblMargin.setSize(50,500);
 	    panel.setBounds(40,20,350,450);
+	    
+	    lblTitulo = new JLabel("Bits Actuales: " + Juego.bits + " bits");
+	    panel.add(lblTitulo);
 	    lblActuales = new JLabel("Bits Actuales: " + Juego.bits + " bits");
 	    panel.add(lblActuales);
 	    lblMaximos = new JLabel("Bits Máximos: Inicia sesión para ver los bits máximos");
@@ -62,6 +70,14 @@ public class Info extends JFrame implements ActionListener {
 	    panel.add(lblSumMejoras);
 	    lblBitsPC = new JLabel("Bits Por Click: " + Juego.bitsPC + " bits");
 	    panel.add(lblBitsPC);
+	    if(Juego.tiempo < 60) {
+	    	lblMins = new JLabel("Tiempo Jugado: " + Juego.tiempo + " mins");
+		    panel.add(lblMins);
+	    }
+	    else {
+	    	lblMins = new JLabel("Tiempo Jugado: " + (df.format(Juego.tiempo / 60)) + "h");
+		    panel.add(lblMins);
+	    }
 	    lblVersion = new JLabel("Versión 0.5");
 	    panel.add(lblVersion);
 	    
@@ -74,6 +90,17 @@ public class Info extends JFrame implements ActionListener {
 			if(rsMax.next()) {
 				lblMaximos.setText("Bits Máximos: " + rsMax.getInt("bitsMaximos") + " bits");
 			}
+			Statement stmtMins = conn.createStatement();
+			ResultSet rsMins = stmtMins.executeQuery("SELECT minutosJugados FROM estadisticas WHERE idUsuario = " + idUsuario);
+			if(rsMins.next()) {
+				if(Juego.tiempo < 60) {
+					lblMins.setText("Tiempo Jugado: " + Juego.tiempo + " mins");
+				}
+				else {
+					lblMins.setText("Tiempo Jugado: " + (df.format(Juego.tiempo / 60)) + "h");
+				}
+			}
+			
 			
 			
 		} catch (SQLException e) {
