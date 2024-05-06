@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { // Solo ejecutar este código si el 
     $row = $resultUser->fetch_assoc();
     if($row != null){
         echo "<h1 style= 'font-family:hack; text-align:center; color:rgb(255, 239, 187);'>El nombre de usuario " .  $nombre_usuario . " ya existe</h1>";
-        echo "<h2 style= 'font-family:hack;  text-align:center;'><a href='/web/CrearCuenta.php' style= ' color:#5cccfc;'>Volver a intentarlo</a></h2>";
+        echo "<h2 style= 'font-family:hack;  text-align:center;'><a href='CrearCuenta.php' style= ' color:#5cccfc;'>Volver a intentarlo</a></h2>";
         return;
     }
 
@@ -71,8 +71,8 @@ VALUES ('$nombre_usuario', '$email', '$encrypt', '$fecha_format', '$nombre', '$a
         <li style= 'font-family:hack;'>Email: $email</li>
         <li style= 'font-family:hack;'>Nombre de usuario: $nombre_usuario</li>
         </ul>";
-    echo "<h2 style= 'font-family:hack;  text-align:center;'><a href='/web/index.html' style= ' color:#5cccfc;'>Volver al Menú</a></h2>
-        <h2 style= ' font-family:hack; text-align:center;'><a href='/web/CrearCuenta.php' style= ' color:#5cccfc;'>Iniciar sesión</a></h2>";
+    echo "<h2 style= 'font-family:hack;  text-align:center;'><a href='index.php' style= ' color:#5cccfc;'>Volver al Menú</a></h2>
+        <h2 style= ' font-family:hack; text-align:center;'><a href='CrearCuenta.php' style= ' color:#5cccfc;'>Iniciar sesión</a></h2>";
 
 
     // Cerrar conexión

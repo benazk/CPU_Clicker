@@ -12,7 +12,8 @@ import javax.swing.JTable;
 
 public class Leaderboards extends JFrame implements ActionListener {
 	JButton btnAtras;
-
+	JScrollPane scrollPane = new JScrollPane();
+	
 	String datos[][]= {
     		{"1","Sue","New York"},
     		{"2","John","Los Angeles"},

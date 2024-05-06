@@ -10,7 +10,7 @@ include("iniciar.php");
       alert("Las contraseñas deben coincidir")
       return false;
     }
-    
+    return true;
   
   }
   function comprobarCamposCompletos(){
@@ -24,7 +24,7 @@ include("iniciar.php");
       alert("Todos los campos tienen que estar completos")
       return false;
     }
-    
+    return true;
   }
 </script>
 <!DOCTYPE html>
@@ -59,7 +59,7 @@ include("iniciar.php");
         </div>
         
         <div class="sign-up-htm">
-          <form name="formCrearCuenta" action="cuenta.php" method="post" class="form" onsubmit="return !!(comprobarContrasennasIguales() & comprobarCamposCompletos());">
+          <form name="formCrearCuenta" action="cuenta.php" method="post" class="form" >
           <div class="group">
             <label for="nombre" class="label">Nombre</label>
             <input id="nombre" type="text" class="input" name="nombre">
@@ -91,7 +91,7 @@ include("iniciar.php");
             <input id="pass2" type="password" class="input" data-type="password" name="password" pattern="^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{7,})\S$">
           </div>
           <div class="group">
-            <input type="submit" class="button" onclick="comprobarContrasennasIguales()" value="Crear Cuenta">
+            <input type="submit" class="button" value="Crear Cuenta" onclick="return !!(comprobarContrasennasIguales() & comprobarCamposCompletos());">
           </div>
           
           

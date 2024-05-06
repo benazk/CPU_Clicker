@@ -1,6 +1,6 @@
 <style>
    html{
-    background-color: #272525;
+    background-color: #272526;
    }
    @font-face {
 	font-family: hack;
@@ -8,13 +8,17 @@
   }
 </style>
 <?php
+session_start();
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") { // Solo ejecutar este código si el formulario se ha enviado
     // Guardo el contenido de los campos en variables de php
     $passwd = $_POST["passwordIniciar"];
     $encrypt = md5($passwd); // Encriptar la contraseña con md5
     $nombre_usuario = $_POST["userIniciar"];
 
-
+    echo $encrypt;
+    echo $nombre_usuario;
+    
     // Variables con las credenciales del servidor/base de datos
     $servidor = "localhost";
     $usuario = "root";
@@ -34,23 +38,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { // Solo ejecutar este código si el 
     $passwordBBDD;
 
     $sql_comprobarUser = "SELECT nombreUsuario, contraseña FROM Usuario WHERE nombreUsuario = '$nombre_usuario'";
-    $row = $result->fetch_assoc();
+    $resultIdcu = $conn->query($sql_comprobarUser);
+   
     
         
-    if($row = $result->fetch_assoc()) {
+    if($row = $resultIdcu->fetch_assoc()) {
           $userBBDD = $row["nombreUsuario"];
           $passwordBBDD = $row["contraseña"];
     }
 
-    if ($userBBDD == $usuario && $encrypt == $passwordBBDD) {
-        $_SESSION['username'] = $usuario;
-        header('location: index.html');
+    if ($userBBDD == $nombre_usuario && $encrypt == $passwordBBDD) { 
+      
         echo "<h1 style= 'font-family:hack; text-align:center; color:rgb(255, 239, 187);'>Sesión iniciada correctamente</h1>";
         echo "<ul style='position:relative; left:42%;'>
             <li style= 'font-family:hack;'>Nombre de usuario: $nombre_usuario</li>
             </ul>";
-        echo "<h2 style= 'font-family:hack;  text-align:center;'><a href='../indexIvan.html' style= ' color:#5cccfc;'>Volver al Menú</a></h2>";
-    
+        echo "<h2 style= 'font-family:hack;  text-align:center;'><a href='index.php' style= ' color:#5cccfc;'>Volver al Menú</a></h2>";
+        
+        $_SESSION['usuario'] = $nombre_usuario;
+        
+
+    }
+    else{
+        echo "$userBBDD". " " ."$usuario" ;
     }
     
 

@@ -1,4 +1,65 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?php
+include ("iniciar.php");
+// Saioa irekita ez badago joan hasierara identifikatu dadin
+$user=null;
+$bits=null;
+$bitsMaximos=null;
+$bitsPs=null;
+$tiempoJugado=null;
+$clicsHechos=null;
+$mejorasTotales=null;
+$BSoD=null;
+
+
+$servidor = "localhost";
+$usuario = "root";
+$password = "";
+$basedatos = "CPUClicker";
+
+
+if(!isset($_SESSION['username'])) {
+    $user="guest";
+    $bits=0;
+    $bitsMaximos=0;
+    $bitsPs=0;
+    $tiempoJugado=0;
+    $clicsHechos=0;
+    $mejorasTotales=0;
+    $BSoD=0;
+
+  
+}
+
+else{
+    $conn = new mysqli($servidor, $usuario, $password, $basedatos);
+    
+    if ($conn->connect_error) {
+        die("Conexión fallida: " . $conn->connect_error);
+    }
+
+    $sql_estadisticas1 = "SELECT * FROM estadisticas WHERE nombreUsuario = '$nombre_usuario'";
+    $resultIdest = $conn->query($sql_estadisticas1);
+
+    if($row = $resultIdest->fetch_assoc()) {
+        $bits = $row["bitsActuales"];
+        $bitsMaximos = $row["bitsMaximos"];
+        $bitsPs = $row["bitsPS"];
+        $tiempoJugado = $row["minutosJugados"];
+        $clickHechos = $row["clicksHechos"];
+        $BSoD = $row["BSoD"];
+  }
+
+  $sql_mejoras1 = "SELECT sumaMejoras FROM mejoras WHERE nombreUsuario = '$nombre_usuario'";
+    $resultIdmj = $conn->query($sql_mejoras1);
+ 
+    if($row = $resultIdmj->fetch_assoc()) {
+        $mejorasTotales = $row["sumaMejoras"]; 
+  }
+  
+
+}
+?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -40,11 +101,14 @@
         <div class="content margin_right_10">
         
         	<div id="usuario">
-                <p class="padding">user@user:$ ~</p>
-                <h1 class="padding">9999999999 Bits</h1>
-                <h2 class="padding">Tiempo Jugado: 999min</h2>
-                <h2 class="padding">Bits maximos: 9999999999999 Bits</h2>
-                <h2 class="padding">Mejoras Totales: 999</h2>
+                <p class="padding"><?php echo $_SESSION['usuario'] ?>@<?php echo $_SESSION['usuario'] ?>:$ ~</p>
+                <h1 class="padding"><?php echo"$bits"?> Bits</h1>
+                <h2 class="padding">Tiempo Jugado: <?php echo"$tiempoJugado"?> min</h2>
+                <h2 class="padding">Bits maximos: <?php echo"$bitsMaximos"?> Bits</h2>
+                <h2 class="padding">Mejoras Totales: <?php echo"$mejorasTotales"?></h2>
+                <h2 class="padding">Bits por segundo: <?php echo"$bitsPs"?></h2>
+                <h2 class="padding">Clicks Hechos: <?php echo"$clicsHechos"?></h2>
+                <h2 class="padding">BSoD: <?php echo"$BSoD"?></h2>
             </div>
             
         	<div class="margin_bottom_40"></div>
