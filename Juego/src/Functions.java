@@ -242,7 +242,9 @@ public class Functions {
 	public static void guardado() { // Guardar los datos en la base de datos
 		actualizarDatos();
 		int idUsuario = idUsuario();
-		int bits = (int) Integer.parseInt(Juego.lblBits.getText().substring(0, Juego.lblBits.getText().length() - 5));
+		String arquitectura = Juego.arquitectura;
+		long bits = (int) Integer.parseInt(Juego.lblBits.getText().substring(0, Juego.lblBits.getText().length() - 5));
+		long bitsMax = Juego.bitsMax;
 		long bitsPS = (long) Integer
 				.parseInt(Juego.lblBitsPS.getText().substring(0, Juego.lblBitsPS.getText().length() - 9));
 		int clicks = 0;
@@ -271,6 +273,9 @@ public class Functions {
 			PreparedStatement stmtBits = conn.prepareStatement(
 					"UPDATE estadisticas SET bitsActuales = " + bits + " WHERE idUsuario = " + idUsuario + ";");
 			stmtBits.executeUpdate();
+			PreparedStatement stmtBitsMax = conn.prepareStatement(
+					"UPDATE estadisticas SET bitsMaximos = " + bitsMax + " WHERE idUsuario = " + idUsuario + ";");
+			stmtBitsMax.executeUpdate();
 			PreparedStatement stmtBitsPS = conn.prepareStatement(
 					"UPDATE estadisticas SET bitsPS = " + bitsPS + " WHERE idUsuario = " + idUsuario + ";");
 			stmtBitsPS.executeUpdate();
@@ -283,6 +288,9 @@ public class Functions {
 			PreparedStatement stmtMins = conn.prepareStatement(
 					"UPDATE estadisticas SET minutosJugados = " + tiempo + " WHERE idUsuario = " + idUsuario + ";");
 			stmtMins.executeUpdate();
+			PreparedStatement stmtArq = conn.prepareStatement(
+					"UPDATE estadisticas SET nombreArquitectura = " + arquitectura + " WHERE idUsuario = " + idUsuario + ";");
+			stmtArq.executeUpdate();
 			PreparedStatement stmtSum = conn.prepareStatement(
 					"UPDATE mejoras SET sumaMejoras = " + sumMejoras + " WHERE idUsuario = " + idUsuario + ";");
 			stmtSum.executeUpdate();
@@ -310,7 +318,6 @@ public class Functions {
 				fw.close();
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -324,23 +331,17 @@ public class Functions {
 			fw = new FileWriter(file);
 			try {
 				fw.write(String.valueOf(Juego.bits) + "\n");
-				System.out.println(Juego.bits);
+				fw.write(String.valueOf(Juego.bitsMax) + "\n");
 				fw.write(String.valueOf(Juego.bitsPS) + "\n");
-				System.out.println(Juego.bitsPS);
 				fw.write(String.valueOf(Juego.bitsPC) + "\n");
-				System.out.println(Juego.bitsPC);
 				fw.write(String.valueOf(Juego.clicks) + "\n");
-				System.out.println(Juego.clicks);
 				fw.write(String.valueOf(Juego.BSoD) + "\n");
-				System.out.println(Juego.BSoD);
 				fw.write(String.valueOf(Juego.mejora1) + "\n");
-				System.out.println(Juego.mejora1);
 				fw.write(String.valueOf(Juego.mejora2) + "\n");
-				System.out.println(Juego.mejora2);
 				fw.write(String.valueOf(Juego.mejora3) + "\n");
-				System.out.println(Juego.mejora3);
-				fw.write(String.valueOf(Juego.mejora4));
-				System.out.println(Juego.mejora4);
+				fw.write(String.valueOf(Juego.mejora4) + "\n");
+				fw.write(String.valueOf(Juego.tiempo) + "\n");
+				fw.write(String.valueOf(Juego.arquitectura) + "\n");
 
 			} catch (Exception e) {
 
@@ -349,7 +350,6 @@ public class Functions {
 				fw.close();
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -362,6 +362,7 @@ public class Functions {
 		try {
 			reader = new BufferedReader(new FileReader(file));
 			Juego.bits = Integer.parseInt(reader.readLine());
+			Juego.bitsMax = Integer.parseInt(reader.readLine());
 			Juego.bitsPS = Integer.parseInt(reader.readLine());
 			Juego.bitsPC = Integer.parseInt(reader.readLine());
 			Juego.clicks = Integer.parseInt(reader.readLine());
@@ -370,9 +371,9 @@ public class Functions {
 			Juego.mejora2 = Integer.parseInt(reader.readLine());
 			Juego.mejora3 = Integer.parseInt(reader.readLine());
 			Juego.mejora4 = Integer.parseInt(reader.readLine());
+			Juego.arquitectura = reader.readLine();
 			reader.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Juego.lblBits.setText(Juego.bits + " bits");
@@ -385,6 +386,7 @@ public class Functions {
 		Juego.lblCostoM2.setText(String.valueOf(Functions.mejora2Price(Juego.mejora2)) + " bits");
 		Juego.lblCostoM3.setText(String.valueOf(Functions.mejora3Price(Juego.mejora3)) + " bits");
 		Juego.lblCostoM4.setText(String.valueOf(Functions.mejora4Price(Juego.mejora4)) + " bits");
+		Juego.lblArquitectura.setText(Juego.arquitectura);
 	}
 
 	public static void actualizarDatos() {
