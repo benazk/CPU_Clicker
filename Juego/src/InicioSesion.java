@@ -1,3 +1,5 @@
+import java.awt.Color;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import javax.swing.JRootPane;
 import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
@@ -22,6 +25,8 @@ public class InicioSesion extends JFrame implements  EventListener, ActionListen
 	JTextField txtUsuario;
 	JButton btnConfirmar;
 	JPasswordField pswContraseña;
+	
+	
 	
 	InicioSesion(){
 		
@@ -33,6 +38,14 @@ public class InicioSesion extends JFrame implements  EventListener, ActionListen
 	    
 	    setLayout(null);
 	    
+	    setUndecorated(true);
+	    
+		getRootPane().setWindowDecorationStyle(JRootPane.NONE);
+	    
+		Container frame = getContentPane();
+
+		frame.setBackground(new Color(50, 50, 50));
+		
 	    lblTitulo = new JLabel("Inicio de Sesión");
 	    lblTitulo.setLocation(150,40);
 	    lblTitulo.setSize(200,40);	   
@@ -98,9 +111,12 @@ public class InicioSesion extends JFrame implements  EventListener, ActionListen
 					Menu.sesion = true;
 					Menu.usuario = User;
 					JOptionPane.showMessageDialog(seleccion, "Sesión iniciada correctamente");
-					Menu.btnIniciarSesion.setVisible(false);
-					Menu.btnCerrarSesion.setVisible(true);
+					Menu.btnIniciarSesion.setEnabled(false);
+					Menu.btnCerrarSesion.setEnabled(true);
+					Functions.mantenerSesiónLocal();
 					System.out.println("sesion: " + Menu.sesion + "; usuario: " + Menu.usuario);
+					
+					this.dispose();
 				}
 				else{
 					JOptionPane.showMessageDialog(seleccion, "Usuario y/o contraseña incorrectos");
@@ -116,15 +132,15 @@ public class InicioSesion extends JFrame implements  EventListener, ActionListen
 		
 	
 	}
-
-
-	public static void main(String[] args) {
+	
+	public static void main(String[]args) {
 		Functions.cargarDrivers();
 		InicioSesion sesion = new InicioSesion();
 		sesion.setVisible(true);
 		sesion.setResizable(false);
-
 	}
+
+	
 
 }
 
