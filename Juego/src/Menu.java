@@ -155,10 +155,21 @@ public class Menu extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		JButton elegido = (JButton) e.getSource();
 		if (elegido == btnJugar) {
-			Juego juego = new Juego();
-			juego.setVisible(true);
-			Thread contador = new Thread(juego);
-			contador.start();
+			Juego juego;
+			try {
+				juego = new Juego();
+				juego.setVisible(true);
+				Thread contador = new Thread(juego);
+				contador.start();
+			} catch (NumberFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			
 		}
 		else if(elegido == btnCerrarSesion) {
 			sesion = false;

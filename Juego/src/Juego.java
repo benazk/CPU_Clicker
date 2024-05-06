@@ -49,10 +49,10 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 	static JButton btnSalir, btnCPU, btnMejora1, btnMejora2, btnMejora3, btnMejora4, btnMejora5, btnBSoD; // Botones de mejoras
 
-	public static JLabel lblBits, lblBitsPS, lblMultiplicador, lblBitsPC; // Labels para datos varios
+	public static JLabel lblArquitectura, lblBits, lblBitsPS, lblMultiplicador, lblBitsPC; // Labels para datos varios
 
 	public static JLabel lblCostoM1 = new JLabel("5 bits"), lblNombreM1 = new JLabel("Ticks"), // Labels para los botones de mejoras
-			lblCantidadM1 = new JLabel(), lblCostoM2 = new JLabel("40 bits"), lblNombreM2 = new JLabel("Cache"),
+			lblCantidadM1 = new JLabel("0"), lblCostoM2 = new JLabel("40 bits"), lblNombreM2 = new JLabel("Cache"),
 			lblCantidadM2 = new JLabel("0"),
 
 			lblCostoM3 = new JLabel("300 bits"), lblNombreM3 = new JLabel("FPS"), lblCantidadM3 = new JLabel("0"),
@@ -61,8 +61,12 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			lblCantidadM4 = new JLabel("0");
 
 	public static JLabel lblBitsCant, lblInfo, lblInfoMejora1, lblInfoMejora2, lblInfoMejora3, lblInfoMejora4; // Labels en desuso
-
+	
+	public static String arquitectura = "Magnus";
+	
 	public static long bits = 0; // Variable de los bits
+	
+	public static long bitsMax = 0; // Variable de los bits máximos
 
 	public static int bitsPS = 0; // Variable de los bits por segundo
 
@@ -88,7 +92,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 	public static int mejora1, mejora2, mejora3, mejora4; // Variables con la cantidad de mejoras individuales
 
-	static double contadorTimestop, contadorGuardado = 300;
+	static double contadorTimestop, contadorGuardado = 0, contadorGoldenAge, contador;
 
 	static boolean guardadoInput = false;
 	
@@ -98,7 +102,9 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 	
 	
-	Juego() {
+	Juego() throws NumberFormatException, IOException {
+		
+		
 		
 		// Personalización
 		setTitle("CPU Clicker");
@@ -118,6 +124,11 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		btnSalir.setSize(150,50);
 		add(btnSalir);
 		btnSalir.addActionListener(this);
+		
+		lblArquitectura = new JLabel("CPU de arquitectura Magnus");
+		lblArquitectura.setLocation(100,70);
+		lblArquitectura.setSize(200,20);
+		lblArquitectura.addMouseListener(this);
 		
 		btnCPU = new JButton("CPU");
 		btnCPU.setLocation(100, 100);
@@ -221,7 +232,8 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		BSoDImg.setSize(1400,450);
 		add(BSoDImg);
 		BSoDImg.setVisible(false);
-		
+		// Functions.mantenerSesiónLocal();
+		// Functions.cargarDatosLocal();
 		if (Menu.sesion) {
 			Functions.cargado();
 		}
@@ -442,7 +454,10 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				
 				if(contadorGuardado >= 300 && Menu.sesion) {
 					Functions.guardado();
-				} 
+				}
+				if(bits > bitsMax) {
+					bitsMax = bits;
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -485,8 +500,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		juego = new Juego();
 		bitsObtenidos = new Thread(juego);
-		Functions.mantenerSesiónLocal();
-		Functions.cargarDatosLocal();
+		
 		String filePath = "timestop.wav";
 		// Functions.playMusicLoop(filePath);
 		// Cargar datos de usuario si el usuario está iniciado sesión
@@ -516,6 +530,10 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		
 		if(e.getSource() == btnCPU) {
 			clicks++;
+		}
+		
+		if(e.getSource() == lblArquitectura) {
+			
 		}
 
 	}
