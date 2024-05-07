@@ -357,7 +357,6 @@ public class Functions {
 
 	public static void cargarDatosLocal() throws NumberFormatException, IOException {
 		File file = new File("datos.txt");
-
 		BufferedReader reader;
 		try {
 			reader = new BufferedReader(new FileReader(file));
@@ -400,5 +399,27 @@ public class Functions {
 		Juego.mejora3 = Integer.parseInt(Juego.lblCantidadM3.getText());
 		Juego.mejora4 = Integer.parseInt(Juego.lblCantidadM4.getText());
 	}
+	public static void pasarTiempo() {
+		try {
+			Thread.sleep(100);
+			Juego.tiempo += 0.1;
+			Juego.bits = Integer.parseInt(Juego.lblBits.getText().substring(0,Juego.lblBits.getText().length()-5));
+			Juego.bitsPS = Integer.parseInt(Juego.lblBitsPS.getText().substring(0,Juego.lblBitsPS.getText().length()-9)) * (Juego.BSoD + 1);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (Juego.bits > 10) {
+			Juego.bits += (int) Math.floor(Juego.bitsPS / 10);
+		} else {
+			Juego.bits += Juego.bitsPS;
+		}
+		Juego.lblBits.setText(String.valueOf(Juego.bits) + " bits");
+		if(Juego.bits > Juego.bitsMax) {
+			Juego.bitsMax = Juego.bits;
+		}
+		
+	}
+	
 
 }
