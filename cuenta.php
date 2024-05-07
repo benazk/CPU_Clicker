@@ -57,7 +57,7 @@ VALUES ('$nombre_usuario', '$email', '$encrypt', '$fecha_format', '$nombre', '$a
     $row = $resultId->fetch_assoc();
     $id = $row["idUsuario"];
 
-    $sql_estadisticas = "INSERT INTO Estadisticas (idUsuario, bitsActuales, bitsMaximos, minutosJugados, BSoD) VALUES ($id, 0,0,'0 minutos', 0)";
+    $sql_estadisticas = "INSERT INTO Estadisticas (idUsuario, bitsActuales, bitsMaximos, bitsPS, minutosJugados, clicksHechos, nombreArquitectura, BSoD) VALUES ($id, 0,0,0,0,0,'Magnus',0)";
     $conn->query($sql_estadisticas);
 
     $sql_mejoras = "INSERT INTO Mejoras (idUsuario, cantidadTicks, cantidadCache, cantidadFPS, cantidadTransistores, sumaMejoras) VALUES ($id,0,0,0,0,0)";
