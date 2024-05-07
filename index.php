@@ -86,7 +86,7 @@ else{
     
     <div id="menu">
 	    <ul>
-            <li><a href="index.html" class="current">Inicio</a></li>
+            <li><a href="index.php" class="current">Inicio</a></li>
             <li><a href="wiki.html">Wiki</a></li>
             <li><a href="actualizaciones.html">Actualizaciones</a></li>
             <li><a href="juego.html">Juego</a></li>
