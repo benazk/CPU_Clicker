@@ -47,7 +47,9 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	
 	public static Thread bitsObtenidos;// Hilo para los bits
 
-	static JButton btnSalir, btnCPU, btnMejora1, btnMejora2, btnMejora3, btnMejora4, btnMejora5, btnBSoD; // Botones de mejoras
+	static Info info;
+	
+	static JButton btnSalir, btnCPU, btnInfo, btnEst, btnMejora1, btnMejora2, btnMejora3, btnMejora4, btnMejora5, btnBSoD; // Botones de mejoras
 
 	public static JLabel lblArquitectura, lblBits, lblBitsPS, lblMultiplicador, lblBitsPC; // Labels para datos varios
 
@@ -76,7 +78,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 	public static int BSoD = 0; // Variable de las veces que has hecho BSoD
 	
-	public static double tiempo = 2000; // Variable para el tiempo de juego
+	public static double tiempo = 0; // Variable para el tiempo de juego
 
 	public static long BSoDPrice = 8000000 * (5 * (1 + BSoD)); // Variable del precio del BSoD
 
@@ -92,8 +94,13 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 	public static int mejora1, mejora2, mejora3, mejora4; // Variables con la cantidad de mejoras individuales
 
-	static double contadorTimestop, contadorGuardado = 0, contadorGoldenAge, contador;
-
+	static double contadorTimestop = 0, contadorGuardado = 0, contadorBuffer, contadorWafer;
+	
+	static long bitsTimestop, bitsPCoriginal;
+	static int timestopMultiplier;
+	
+	static JLabel lblTimeStop, lblBuffer, lblWafer;
+	
 	static boolean guardadoInput = false;
 	
 	static boolean abierto = true;
@@ -158,7 +165,19 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		frases.setLocation(400, 100);
 		add(frases);
 		frases.addMouseListener(this);
-
+		
+		btnInfo = new JButton("Información");
+		btnInfo.setLocation(400,600);
+		btnInfo.setSize(200,60);
+		add(btnInfo);
+		btnInfo.addActionListener(this);
+		
+		btnEst = new JButton("Estadísticas	");
+		btnEst.setLocation(600,600);
+		btnEst.setSize(200,60);
+		add(btnEst);
+		
+		
 		btnBSoD = new JButton();
 		btnBSoD.setLayout(new GridLayout(2, 2));
 		btnBSoD.add(lblBSoDNombre);
@@ -217,13 +236,24 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		bonuses[0].setVisible(false);
 		bonuses[0].addActionListener(this);
 		bonuses[0].addMouseListener(this);
+		lblTimeStop = new JLabel("15");
+		lblTimeStop.setLocation(200,40);
+		lblTimeStop.setSize(100,20);
+		add(lblTimeStop);
+		lblTimeStop.setVisible(false);
+		
 		bonuses[1].addActionListener(this);
 		add(bonuses[1]);
 		bonuses[1].setVisible(false);
 		bonuses[2].addActionListener(this);
 		add(bonuses[2]);
 		bonuses[2].setVisible(false);
-
+		
+		info = new Info();
+		Info.panel.setSize(350,450);
+		Info.panel.setLocation(400,200);
+		add(Info.panel);
+		Info.panel.setVisible(false);
 		
 		ImageIcon icon = new ImageIcon("BSoD.png");
 		BSoDImg = new JLabel();
@@ -232,8 +262,8 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		BSoDImg.setSize(1400,450);
 		add(BSoDImg);
 		BSoDImg.setVisible(false);
-		// Functions.mantenerSesiónLocal();
-		// Functions.cargarDatosLocal();
+		Functions.mantenerSesiónLocal();
+		Functions.cargarDatosLocal();
 		if (Menu.sesion) {
 			Functions.cargado();
 		}
@@ -252,15 +282,23 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		bits = Integer.parseInt(lblBits.getText().substring(0,lblBits.getText().length()-5));
 		JButton accion = (JButton) e.getSource();
 		if (accion == btnCPU) { // Al clicar el CPU, hará esto
+			timestopMultiplier = 1;
+			if(contadorTimestop > 0) {
+				timestopMultiplier++;
+				bitsTimestop += bitsPC * timestopMultiplier;
+				bits = bits + bitsTimestop; 
+			}
+			else {
 			bits = Integer.parseInt(lblBits.getText().substring(0,lblBits.getText().length()-5));
 			bits += bitsPC;
 			System.out.println(bitsPC);
+			}
+			
 			lblBits.setText(String.valueOf(bits) + " bits");
 			lblBitsPC.setLocation(getMousePosition());
 			lblBitsPC.setText(bitsPC + " bits");
 			lblBitsPC.setVisible(true);
 			setComponentZOrder(lblBitsPC,0);
-			
 		}
 		if (accion == btnMejora1) { // Al clicar las mejoras, hará esto
 			mejora1 = Integer.parseInt(lblCantidadM1.getText());
@@ -309,6 +347,9 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				lblCostoM4.setText(String.valueOf(Functions.mejora4Price(mejora4)) + " bits");
 				guardadoInput = true;
 			}
+		}
+		if(accion == btnEst) {
+			Info.panel.setVisible(true);
 		}
 		if (accion == btnBSoD) {
 			// Codigo para reiniciar en el caso de un BSoD (Pone todos los datos excepto el BSoD a 0)
@@ -401,10 +442,14 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		}
 		if (accion == bonuses[0]) { // Al clicar el bonus 1, hará esto
 			bonuses[0].setVisible(false);
+			lblTimeStop.setVisible(true);
 			String filePath = "timestop.wav";
 			Functions.playMusic(filePath);
 			estadoBonus = false;
 			guardadoInput = true;
+			contadorTimestop = 15;
+			bitsPCoriginal = bitsPC;
+			
 		}
 		if (accion == bonuses[1]) { // Al clicar el bonus 2, hará esto
 			bonuses[1].setVisible(false);
@@ -419,12 +464,12 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			guardadoInput = true;
 		}
 		if(accion == btnSalir) {
-			abierto = false;
 			Functions.guardarDatosLocal();
 			if(Menu.sesion) {
 				Functions.guardado();
 			}
-			this.dispose();
+			dispose();
+			Info.panel.removeAll();
 		}
 
 	}
@@ -435,6 +480,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			try {
 				
 				Thread.sleep(100);
+				
 				tiempo += 0.1;
 				contadorGuardado += 0.1;
 				bits = Integer.parseInt(lblBits.getText().substring(0,lblBits.getText().length()-5));
@@ -457,6 +503,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				}
 				if(bits > bitsMax) {
 					bitsMax = bits;
+					System.out.println("ola");
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -493,7 +540,26 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				}
 			}
 			
+			while(contadorTimestop > 0) {
+				try {
+					Thread.sleep(100);
+					contadorTimestop -= 0.1;
+					lblTimeStop.setText(String.valueOf(Info.df.format(contadorTimestop)) + " s");
+					lblBits.setText(String.valueOf(bits) + " bits");
+				} catch (InterruptedException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+				System.out.println(contadorTimestop);
+				if(contadorTimestop <= 0) {
+					lblTimeStop.setVisible(false);
+					timestopMultiplier = 0;
+					String resumir = "timeresume.wav";
+					Functions.playMusic(resumir);
+				}
+			}
 		}
+		
 		
 	}
 

@@ -159,6 +159,7 @@ body {
     .sign-in:checked
     + .tab
     + .sign-up
+    
     + .tab
     + .login-form
     .sign-in-htm {

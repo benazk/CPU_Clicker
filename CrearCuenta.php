@@ -93,7 +93,9 @@ include("iniciar.php");
           <div class="group">
             <input type="submit" class="button" value="Crear Cuenta" onclick="return !!(comprobarContrasennasIguales() & comprobarCamposCompletos());">
           </div>
-          
+          <div class="olvidada">
+            <a href="contraseña-olvidada-correo.php">Contraseña olvidada</a>
+          </div>
           
         </form>
           </div>

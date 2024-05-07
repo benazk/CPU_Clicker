@@ -159,8 +159,10 @@ public class Menu extends JFrame implements ActionListener {
 			try {
 				juego = new Juego();
 				juego.setVisible(true);
+				Juego.abierto = true;
 				Thread contador = new Thread(juego);
 				contador.start();
+				
 			} catch (NumberFormatException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

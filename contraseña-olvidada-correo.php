@@ -70,11 +70,12 @@ $codigo = rand(0, 999999);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["correoRecuperar"];
+    echo $email;
     $sujeto = "Cambio de contraseña de CPU Clicker";
     $mensaje = "Has solicitado cambiar la contraseña de tu cuenta, el código para cambiarla es: " . $codigo;
     $mensajeSinCuenta = "Este correo no tiene una cuenta de CPU Clicker asociada";
     $cabezera = 'MIME-Version: 1.0' . "\r\n";
-    $cabezera .= 'From: Your name <info@address.com>' . "\r\n";
+    $cabezera .= 'From: CPU Clicker <passwordchange@request.self>' . "\r\n";
     $cabezera .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 
     // Variables con las credenciales del servidor/base de datos
@@ -102,8 +103,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $cabezera
         );
         header("Location: contraseña-olvidada-codigo.php");
-        exit;
-    } else {
+    } 
+    else {
         mail(
             $email,
             $sujeto,
@@ -111,7 +112,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $cabezera
         );
         header("Location: contraseña-olvidada-codigo.php");
-        exit;
     }
 }
 ?>

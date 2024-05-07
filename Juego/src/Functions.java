@@ -341,7 +341,7 @@ public class Functions {
 				fw.write(String.valueOf(Juego.mejora3) + "\n");
 				fw.write(String.valueOf(Juego.mejora4) + "\n");
 				fw.write(String.valueOf(Juego.tiempo) + "\n");
-				fw.write(String.valueOf(Juego.arquitectura) + "\n");
+				fw.write(String.valueOf(Juego.arquitectura));
 
 			} catch (Exception e) {
 
@@ -371,6 +371,7 @@ public class Functions {
 			Juego.mejora2 = Integer.parseInt(reader.readLine());
 			Juego.mejora3 = Integer.parseInt(reader.readLine());
 			Juego.mejora4 = Integer.parseInt(reader.readLine());
+			Juego.tiempo = Double.parseDouble(reader.readLine());
 			Juego.arquitectura = reader.readLine();
 			reader.close();
 		} catch (FileNotFoundException e) {
