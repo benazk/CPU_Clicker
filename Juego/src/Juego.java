@@ -1,3 +1,7 @@
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -16,6 +20,7 @@ import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -25,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
+import javax.swing.Timer;
 
 @SuppressWarnings("serial")
 public class Juego extends JFrame implements ActionListener, Runnable, MouseListener, WindowListener {
@@ -42,18 +48,20 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	static JLabel frases = new JLabel();
 
 	static JLabel BSoDImg;
-	
+
 	public static Juego juego;// Ventana del juego
-	
+
 	public static Thread bitsObtenidos;// Hilo para los bits
 
 	static Info info;
-	
-	static JButton btnSalir, btnCPU, btnInfo, btnEst, btnMejora1, btnMejora2, btnMejora3, btnMejora4, btnMejora5, btnBSoD; // Botones de mejoras
+
+	static JButton btnSalir, btnCPU, btnInfo, btnEst, btnMejora1, btnMejora2, btnMejora3, btnMejora4, btnMejora5,
+			btnBSoD; // Botones de mejoras
 
 	public static JLabel lblArquitectura, lblBits, lblBitsPS, lblMultiplicador, lblBitsPC; // Labels para datos varios
 
-	public static JLabel lblCostoM1 = new JLabel("5 bits"), lblNombreM1 = new JLabel("Ticks"), // Labels para los botones de mejoras
+	public static JLabel lblCostoM1 = new JLabel("5 bits"), lblNombreM1 = new JLabel("Ticks"), // Labels para los
+																								// botones de mejoras
 			lblCantidadM1 = new JLabel("0"), lblCostoM2 = new JLabel("40 bits"), lblNombreM2 = new JLabel("Cache"),
 			lblCantidadM2 = new JLabel("0"),
 
@@ -62,122 +70,157 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			lblCostoM4 = new JLabel("2000 bits"), lblNombreM4 = new JLabel("Transistores"),
 			lblCantidadM4 = new JLabel("0");
 
-	public static JLabel lblBitsCant, lblInfo, lblInfoMejora1, lblInfoMejora2, lblInfoMejora3, lblInfoMejora4; // Labels en desuso
-	
+	public static JLabel lblBitsCant, lblInfo, lblInfoMejora1, lblInfoMejora2, lblInfoMejora3, lblInfoMejora4; // Labels
+																												// en
+																												// desuso
+
 	public static String arquitectura = "Magnus";
-	
+
 	public static long bits = 0; // Variable de los bits
-	
+
 	public static long bitsMax = 0; // Variable de los bits máximos
 
-	public static int bitsPS = 0; // Variable de los bits por segundo
+	public static long bitsPS = 0; // Variable de los bits por segundo
 
-	public static int bitsPC = 1; // Variable de los bits por click
+	public static int bitsPC = 0; // Variable de los bits por click
 
 	public static int clicks = 0; // Variable de los clicks hechos
 
 	public static int BSoD = 0; // Variable de las veces que has hecho BSoD
-	
+
 	public static double tiempo = 0; // Variable para el tiempo de juego
 
 	public static long BSoDPrice = 8000000 * (5 * (1 + BSoD)); // Variable del precio del BSoD
 
-	static JButton btnPararTiempo = new JButton("ZaWarudo"), btnBitsGratis = new JButton("FreeFood"),
-			btnPotenciadorBits = new JButton("MoarGalletas");  // Botones de bonuses
+	static JButton btnPararTiempo = new JButton("Click"), btnBitsGratis = new JButton("Click"),
+			btnPotenciadorBits = new JButton("Click"); // Botones de bonuses
 
-	static JButton bonuses[] = { btnPararTiempo, btnBitsGratis, btnPotenciadorBits }; // array con los botones de bonuses
+	static JButton bonuses[] = { btnPararTiempo, btnBitsGratis, btnPotenciadorBits }; // array con los botones de
+																						// bonuses
 
 	static boolean estadoBonus; // Verifica si un boton está en pantalla o no
 
-	public static JLabel lblBSoDNombre = new JLabel("Blue Screen Of Death"),  // Labels para el botón de BSoD
+	public static JLabel lblBSoDNombre = new JLabel("Blue Screen Of Death"), // Labels para el botón de BSoD
 			lblBSoD_Cant = new JLabel(String.valueOf(BSoD)), lblBSoD_Precio = new JLabel(String.valueOf(BSoDPrice));
 
 	public static int mejora1, mejora2, mejora3, mejora4; // Variables con la cantidad de mejoras individuales
 
-	static double contadorTimestop = 0, contadorGuardado = 0, contadorBuffer, contadorWafer;
+	static double contadorTimestop = 0, contadorBuffer, contadorWafer = 1; // Contadores para parar el tiempo, tener un
+																		   // bonus de bits por 120 segundos y que un
+																		   // texto apareza en pantalla por 1 segundo
+	static public Font font;	//Fuente del juego											
+	static public Font sizedFont; 
 	
-	static long bitsTimestop, bitsPCoriginal;
+	static long bitsTimestop, bitsPCoriginal, bitsPSoriginal;
+
 	static int timestopMultiplier;
-	
+
 	static JLabel lblTimeStop, lblBuffer, lblWafer;
-	
-	static boolean guardadoInput = false;
-	
+
 	static boolean abierto = true;
+
+	static Timer timer;
 
 	static Connection conn; // Variable con la conexión
 
-	
+	Color color = new Color(88, 184, 4);
 	
 	Juego() throws NumberFormatException, IOException {
-		
-		
-		
-		// Personalización
-		setTitle("CPU Clicker");
 
+		// Personalización
+		Container frame = getContentPane();
+		InputStream is = Juego.class.getResourceAsStream("JetBrainsMono-Light.ttf");
+		try {
+			font = Font.createFont(Font.TRUETYPE_FONT, is);
+			sizedFont = font.deriveFont(20f);
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		setTitle("CPU Clicker");
+		
 		setSize(1366, 768);
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		setLayout(null);
-		
+
 		setUndecorated(true);
-	    
+
 		getRootPane().setWindowDecorationStyle(JRootPane.NONE);
 
+		frame.setBackground(new Color(50,50,50));
+		
 		btnSalir = new JButton("Volver al Menú");
-		btnSalir.setLocation(0,0);
-		btnSalir.setSize(150,50);
-		add(btnSalir);
+		btnSalir.setLocation(0, 0);
+		btnSalir.setSize(150, 50);
+		frame.add(btnSalir);
 		btnSalir.addActionListener(this);
-		
+
 		lblArquitectura = new JLabel("CPU de arquitectura Magnus");
-		lblArquitectura.setLocation(100,70);
-		lblArquitectura.setSize(200,20);
+		lblArquitectura.setLocation(100, 70);
+		lblArquitectura.setSize(200, 20);
 		lblArquitectura.addMouseListener(this);
-		
+		lblArquitectura.setForeground(color);
+		add(lblArquitectura);
+
 		btnCPU = new JButton("CPU");
 		btnCPU.setLocation(100, 100);
 		btnCPU.setSize(200, 200);
-		add(btnCPU);
+		frame.add(btnCPU);
 		btnCPU.addActionListener(this);
 		btnCPU.addMouseListener(this);
+		switch (BSoD) {
+			case 0:
+				btnCPU.setBackground(new Color(180,180,180));
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+		}
 
 		lblBits = new JLabel("0 bits");
 		lblBits.setLocation(175, 330);
 		lblBits.setSize(200, 20);
-		add(lblBits);
+		lblBits.setFont(sizedFont);
+		frame.add(lblBits);
 
 		lblBitsPS = new JLabel("0 bits P/S");
 		lblBitsPS.setLocation(175, 360);
 		lblBitsPS.setSize(150, 20);
-		add(lblBitsPS);
-		
+		frame.add(lblBitsPS);
+
 		lblBitsPC = new JLabel(bitsPC + " bits");
-		lblBitsPC.setLocation(Functions.posicionRandomEnRango(70,340), Functions.posicionRandomEnRango(70,340));
+		lblBitsPC.setLocation(Functions.posicionRandomEnRango(70, 340), Functions.posicionRandomEnRango(70, 340));
 		lblBitsPC.setSize(150, 20);
-		add(lblBitsPC);
+		frame.add(lblBitsPC);
 		lblBitsPC.setVisible(false);
 
 		frases.setText(frasesTexto[(int) Math.floor(Math.random() * 7)]);
 		frases.setSize(350, 45);
 		frases.setLocation(400, 100);
-		add(frases);
+		frame.add(frases);
 		frases.addMouseListener(this);
-		
+
 		btnInfo = new JButton("Información");
-		btnInfo.setLocation(400,600);
-		btnInfo.setSize(200,60);
-		add(btnInfo);
+		btnInfo.setLocation(400, 600);
+		btnInfo.setSize(200, 60);
+		frame.add(btnInfo);
 		btnInfo.addActionListener(this);
-		
+
 		btnEst = new JButton("Estadísticas	");
-		btnEst.setLocation(600,600);
-		btnEst.setSize(200,60);
-		add(btnEst);
-		
-		
+		btnEst.setLocation(600, 600);
+		btnEst.setSize(200, 60);
+		frame.add(btnEst);
+		btnEst.addActionListener(this);
+
 		btnBSoD = new JButton();
 		btnBSoD.setLayout(new GridLayout(2, 2));
 		btnBSoD.add(lblBSoDNombre);
@@ -185,7 +228,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		btnBSoD.add(lblBSoD_Precio);
 		btnBSoD.setLocation(820, 30);
 		btnBSoD.setSize(400, 100);
-		add(btnBSoD);
+		frame.add(btnBSoD);
 		btnBSoD.addActionListener(this);
 
 		btnMejora1 = new JButton();
@@ -196,7 +239,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		btnMejora1.add(lblCostoM1);
 		btnMejora1.setLocation(900, 150);
 		btnMejora1.setSize(250, 60);
-		add(btnMejora1);
+		frame.add(btnMejora1);
 		btnMejora1.addActionListener(this);
 
 		btnMejora2 = new JButton();
@@ -207,7 +250,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		btnMejora2.add(lblCostoM2);
 		btnMejora2.setLocation(900, 250);
 		btnMejora2.setSize(250, 60);
-		add(btnMejora2);
+		frame.add(btnMejora2);
 		btnMejora2.addActionListener(this);
 
 		btnMejora3 = new JButton();
@@ -218,7 +261,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		btnMejora3.add(lblCostoM3);
 		btnMejora3.setLocation(900, 350);
 		btnMejora3.setSize(250, 60);
-		add(btnMejora3);
+		frame.add(btnMejora3);
 		btnMejora3.addActionListener(this);
 
 		btnMejora4 = new JButton();
@@ -229,38 +272,49 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		btnMejora4.add(lblCostoM4);
 		btnMejora4.setLocation(900, 450);
 		btnMejora4.setSize(250, 60);
-		add(btnMejora4);
+		frame.add(btnMejora4);
 		btnMejora4.addActionListener(this);
 
-		add(bonuses[0]);
+		frame.add(bonuses[0]);
 		bonuses[0].setVisible(false);
 		bonuses[0].addActionListener(this);
 		bonuses[0].addMouseListener(this);
 		lblTimeStop = new JLabel("15");
-		lblTimeStop.setLocation(200,40);
-		lblTimeStop.setSize(100,20);
-		add(lblTimeStop);
+		lblTimeStop.setLocation(200, 40);
+		lblTimeStop.setSize(100, 20);
+		frame.add(lblTimeStop);
 		lblTimeStop.setVisible(false);
-		
+
 		bonuses[1].addActionListener(this);
-		add(bonuses[1]);
+		lblWafer = new JLabel();
+		lblWafer.setFont(new Font("Arial", Font.PLAIN, 30));
+		lblWafer.setLocation(500, 280);
+		lblWafer.setSize(300, 50);
+		frame.add(lblWafer);
+		lblWafer.setVisible(false);
+
+		frame.add(bonuses[1]);
 		bonuses[1].setVisible(false);
 		bonuses[2].addActionListener(this);
-		add(bonuses[2]);
+		frame.add(bonuses[2]);
 		bonuses[2].setVisible(false);
-		
+		lblBuffer = new JLabel();
+		lblBuffer.setLocation(lblTimeStop.getLocation());
+		lblBuffer.setSize(lblTimeStop.getSize());
+		frame.add(lblBuffer);
+
 		info = new Info();
-		Info.panel.setSize(350,450);
-		Info.panel.setLocation(400,200);
-		add(Info.panel);
+		Info.panel.setSize(350, 450);
+		Info.panel.setLocation(400, 200);
+		frame.add(Info.panel);
 		Info.panel.setVisible(false);
-		
+
 		ImageIcon icon = new ImageIcon("BSoD.png");
 		BSoDImg = new JLabel();
 		BSoDImg.setIcon(icon);
-		BSoDImg.setLocation(0,0);
-		BSoDImg.setSize(1400,450);
-		add(BSoDImg);
+		BSoDImg.setLocation(0, 0);
+		BSoDImg.setSize(1400, 450);
+		frame.add(BSoDImg);
 		BSoDImg.setVisible(false);
 		Functions.mantenerSesiónLocal();
 		Functions.cargarDatosLocal();
@@ -269,40 +323,40 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		}
 
 	}
+
 	public void actionPerformed(ActionEvent e) {
-		
+
 		System.out.println("clicks efectuados: " + clicks);
 		System.out.println("bits por click: " + bitsPC);
 		System.out.println("bits actuales: " + bits);
 		System.out.println("BSoDs: " + BSoD);
 		System.out.println("Usuario: " + Menu.usuario);
 		System.out.println("Sesion: " + Menu.sesion);
-		
-		
-		bits = Integer.parseInt(lblBits.getText().substring(0,lblBits.getText().length()-5));
+
+		bits = Integer.parseInt(lblBits.getText().substring(0, lblBits.getText().length() - 5));
 		JButton accion = (JButton) e.getSource();
 		if (accion == btnCPU) { // Al clicar el CPU, hará esto
 			timestopMultiplier = 1;
-			if(contadorTimestop > 0) {
+			if (contadorTimestop > 0) {
 				timestopMultiplier++;
 				bitsTimestop += bitsPC * timestopMultiplier;
-				bits = bits + bitsTimestop; 
+				bits = bits + bitsTimestop;
+			} else {
+				bits = Integer.parseInt(lblBits.getText().substring(0, lblBits.getText().length() - 5));
+				bits += bitsPC;
+				System.out.println(bitsPC);
 			}
-			else {
-			bits = Integer.parseInt(lblBits.getText().substring(0,lblBits.getText().length()-5));
-			bits += bitsPC;
-			System.out.println(bitsPC);
-			}
-			
+
 			lblBits.setText(String.valueOf(bits) + " bits");
 			lblBitsPC.setLocation(getMousePosition());
 			lblBitsPC.setText(bitsPC + " bits");
 			lblBitsPC.setVisible(true);
-			setComponentZOrder(lblBitsPC,0);
+			setComponentZOrder(lblBitsPC, 0);
 		}
 		if (accion == btnMejora1) { // Al clicar las mejoras, hará esto
 			mejora1 = Integer.parseInt(lblCantidadM1.getText());
-			if (Integer.parseInt(lblBits.getText().substring(0,lblBits.getText().length()-5)) >= Functions.mejora1Price(mejora1)) {
+			if (Integer.parseInt(lblBits.getText().substring(0, lblBits.getText().length() - 5)) >= Functions
+					.mejora1Price(mejora1)) {
 				bits -= Functions.mejora1Price(mejora1); // Quitar costo de la mejora al dinero total
 				lblBits.setText(String.valueOf(bits) + " bits");
 				mejora1++; // Sumar 1 a las mejoras totales de ese tipo
@@ -310,64 +364,72 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				bitsPC = Functions.mejora1(mejora1) + 1; // Sumar bits por click teniendo en cuenta la mejora
 				lblCostoM1.setText(String.valueOf(Functions.mejora1Price(mejora1)) + " bits"); // Poner el costo de la
 																								// mejora
-				guardadoInput = true;
 			}
 
 		}
 		if (accion == btnMejora2) {
-			if (Integer.parseInt(lblBits.getText().substring(0,lblBits.getText().length()-5)) >= Functions.mejora2Price(mejora2)) {
+			if (Integer.parseInt(lblBits.getText().substring(0, lblBits.getText().length() - 5)) >= Functions
+					.mejora2Price(mejora2)) {
 				bits -= Functions.mejora2Price(mejora2);
 				lblBits.setText(String.valueOf(bits) + " bits");
 				mejora2++;
 				lblCantidadM2.setText(String.valueOf(mejora2));
-				lblBitsPS.setText(String.valueOf(Integer.parseInt(lblBitsPS.getText().substring(0,lblBitsPS.getText().length()-9)) + Functions.mejora2(mejora2)) + " bits P/S");
+				lblBitsPS.setText(String
+						.valueOf(Integer.parseInt(lblBitsPS.getText().substring(0, lblBitsPS.getText().length() - 9))
+								+ Functions.mejora2(mejora2))
+						+ " bits P/S");
 				lblCostoM2.setText(String.valueOf(Functions.mejora2Price(mejora2)) + " bits");
-				guardadoInput = true;
 			}
 		}
 
 		if (accion == btnMejora3) {
-			if (Integer.parseInt(lblBits.getText().substring(0,lblBits.getText().length()-5)) >= Functions.mejora3Price(mejora3)) {
+			if (Integer.parseInt(lblBits.getText().substring(0, lblBits.getText().length() - 5)) >= Functions
+					.mejora3Price(mejora3)) {
 				bits -= Functions.mejora3Price(mejora3);
 				lblBits.setText(String.valueOf(bits) + " bits");
 				mejora3++;
 				lblCantidadM3.setText(String.valueOf(mejora3));
-				lblBitsPS.setText(String.valueOf(Integer.parseInt(lblBitsPS.getText().substring(0,lblBitsPS.getText().length()-9)) + Functions.mejora3(mejora3)) + " bits P/S");
+				lblBitsPS.setText(String
+						.valueOf(Integer.parseInt(lblBitsPS.getText().substring(0, lblBitsPS.getText().length() - 9))
+								+ Functions.mejora3(mejora3))
+						+ " bits P/S");
 				lblCostoM3.setText(String.valueOf(Functions.mejora3Price(mejora3)) + " bits");
-				guardadoInput = true;
 			}
 		}
 		if (accion == btnMejora4) {
-			if (Integer.parseInt(lblBits.getText().substring(0,lblBits.getText().length()-5)) >= Functions.mejora4Price(mejora4)) {
+			if (Integer.parseInt(lblBits.getText().substring(0, lblBits.getText().length() - 5)) >= Functions
+					.mejora4Price(mejora4)) {
 				bits -= Functions.mejora4Price(mejora4);
 				lblBits.setText(String.valueOf(bits) + " bits");
 				mejora4++;
 				lblCantidadM4.setText(String.valueOf(mejora4));
-				lblBitsPS.setText(String.valueOf(Integer.parseInt(lblBitsPS.getText().substring(0,lblBitsPS.getText().length()-9)) + Functions.mejora4(mejora4)) + " bits P/S");
+				lblBitsPS.setText(String
+						.valueOf(Integer.parseInt(lblBitsPS.getText().substring(0, lblBitsPS.getText().length() - 9))
+								+ Functions.mejora4(mejora4))
+						+ " bits P/S");
 				lblCostoM4.setText(String.valueOf(Functions.mejora4Price(mejora4)) + " bits");
-				guardadoInput = true;
 			}
 		}
-		if(accion == btnEst) {
+		if (accion == btnEst) {
 			Info.panel.setVisible(true);
 		}
 		if (accion == btnBSoD) {
-			// Codigo para reiniciar en el caso de un BSoD (Pone todos los datos excepto el BSoD a 0)
+			// Codigo para reiniciar en el caso de un BSoD (Pone todos los datos excepto el
+			// BSoD a 0)
 			if (bits > Integer.parseInt(lblBSoD_Precio.getText())) {
-				
+
 				BSoD++;
-				
+
 				bits = 0;
 				lblBits.setText(bits + " bits");
-				
-				
+
 				bitsPS = 0;
 				lblBitsPS.setText(bitsPS + " bits P/S");
-				
+
 				bitsPC = 1;
-				
+
 				clicks = 0;
-				
+
 				mejora1 = 0;
 				lblCantidadM1.setText(String.valueOf(mejora1));
 
@@ -384,59 +446,53 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				lblCostoM2.setText(String.valueOf(Functions.mejora2Price(mejora2)) + " bits");
 				lblCostoM3.setText(String.valueOf(Functions.mejora3Price(mejora3)) + " bits");
 				lblCostoM4.setText(String.valueOf(Functions.mejora4Price(mejora4)) + " bits");
-				
-				if(Menu.sesion) {
-				try {
-					conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cpuclicker", "root", "");
 
-					lblBSoD_Cant.setText(String.valueOf(BSoD) + "  BSoDs");
-					PreparedStatement stmtBSoD = conn
-							.prepareStatement("UPDATE estadisticas SET BSoD = " + BSoD + "  WHERE idUsuario = " + "'"
-									+ Functions.idUsuario() + "';");
-					stmtBSoD.executeUpdate();
+				if (Menu.sesion) {
+					try {
+						conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cpuclicker", "root", "");
 
-					
-					lblBits.setText(String.valueOf(bits) + " bits");
-					PreparedStatement stmtbits = conn
-							.prepareStatement("UPDATE estadisticas SET bitsActuales = 0  WHERE idUsuario = " + "'"
-									+ Functions.idUsuario() + "';");
-					stmtbits.executeUpdate();
+						lblBSoD_Cant.setText(String.valueOf(BSoD) + "  BSoDs");
+						PreparedStatement stmtBSoD = conn.prepareStatement("UPDATE estadisticas SET BSoD = " + BSoD
+								+ "  WHERE idUsuario = " + "'" + Functions.idUsuario() + "';");
+						stmtBSoD.executeUpdate();
 
-					
-					lblBitsPS.setText(String.valueOf(bitsPS) + " bits P/S");
-					PreparedStatement stmtbitsPS = conn
-							.prepareStatement("UPDATE estadisticas SET bitsPS = 0  WHERE idUsuario = " + "'"
-									+ Functions.idUsuario() + "';");
-					stmtbitsPS.executeUpdate();
+						lblBits.setText(String.valueOf(bits) + " bits");
+						PreparedStatement stmtbits = conn
+								.prepareStatement("UPDATE estadisticas SET bitsActuales = 0  WHERE idUsuario = " + "'"
+										+ Functions.idUsuario() + "';");
+						stmtbits.executeUpdate();
 
-					
-					PreparedStatement stmtMejoras1 = conn
-							.prepareStatement("UPDATE mejoras SET cantidadTicks = 0 WHERE idUsuario = " + "'"
-									+ Functions.idUsuario() + "';");
-					stmtMejoras1.executeUpdate();
-					PreparedStatement stmtMejoras2 = conn
-							.prepareStatement("UPDATE mejoras SET cantidadCache = 0 WHERE idUsuario = " + "'"
-									+ Functions.idUsuario() + "';");
-					stmtMejoras2.executeUpdate();
-					PreparedStatement stmtMejoras3 = conn
-							.prepareStatement("UPDATE mejoras SET cantidadFPS = 0 WHERE idUsuario = " + "'"
-									+ Functions.idUsuario() + "';");
-					stmtMejoras3.executeUpdate();
-					PreparedStatement stmtMejoras4 = conn
-							.prepareStatement("UPDATE mejoras SET cantidadTransistores = 0 WHERE idUsuario = " + "'"
-									+ Functions.idUsuario() + "';");
-					stmtMejoras4.executeUpdate();
-					PreparedStatement stmtMejorasSum = conn
-							.prepareStatement("UPDATE mejoras SET sumMejoras = 0 WHERE idUsuario = " + "'"
-									+ Functions.idUsuario() + "';");
-					stmtMejorasSum.executeUpdate();
-					guardadoInput = true;
-					
+						lblBitsPS.setText(String.valueOf(bitsPS) + " bits P/S");
+						PreparedStatement stmtbitsPS = conn
+								.prepareStatement("UPDATE estadisticas SET bitsPS = 0  WHERE idUsuario = " + "'"
+										+ Functions.idUsuario() + "';");
+						stmtbitsPS.executeUpdate();
 
-				} catch (SQLException e1) {
+						PreparedStatement stmtMejoras1 = conn
+								.prepareStatement("UPDATE mejoras SET cantidadTicks = 0 WHERE idUsuario = " + "'"
+										+ Functions.idUsuario() + "';");
+						stmtMejoras1.executeUpdate();
+						PreparedStatement stmtMejoras2 = conn
+								.prepareStatement("UPDATE mejoras SET cantidadCache = 0 WHERE idUsuario = " + "'"
+										+ Functions.idUsuario() + "';");
+						stmtMejoras2.executeUpdate();
+						PreparedStatement stmtMejoras3 = conn
+								.prepareStatement("UPDATE mejoras SET cantidadFPS = 0 WHERE idUsuario = " + "'"
+										+ Functions.idUsuario() + "';");
+						stmtMejoras3.executeUpdate();
+						PreparedStatement stmtMejoras4 = conn
+								.prepareStatement("UPDATE mejoras SET cantidadTransistores = 0 WHERE idUsuario = " + "'"
+										+ Functions.idUsuario() + "';");
+						stmtMejoras4.executeUpdate();
+						PreparedStatement stmtMejorasSum = conn
+								.prepareStatement("UPDATE mejoras SET sumMejoras = 0 WHERE idUsuario = " + "'"
+										+ Functions.idUsuario() + "';");
+						stmtMejorasSum.executeUpdate();
 
-					e1.printStackTrace();
-				}
+					} catch (SQLException e1) {
+
+						e1.printStackTrace();
+					}
 				}
 			}
 		}
@@ -445,27 +501,36 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			lblTimeStop.setVisible(true);
 			String filePath = "timestop.wav";
 			Functions.playMusic(filePath);
-			estadoBonus = false;
-			guardadoInput = true;
 			contadorTimestop = 15;
 			bitsPCoriginal = bitsPC;
-			
+
 		}
 		if (accion == bonuses[1]) { // Al clicar el bonus 2, hará esto
 			bonuses[1].setVisible(false);
-			bits += (int) Integer.parseInt(lblBitsPS.getText().substring(0,lblBitsPS.getText().length()-9)) * 300;
+			bits += (int) Integer.parseInt(lblBitsPS.getText().substring(0, lblBitsPS.getText().length() - 9)) * 300;
 			lblBits.setText(String.valueOf(bits) + " bits");
-			estadoBonus = false;
-			guardadoInput = true;
+			lblWafer.setText("+" + String.valueOf(
+					(int) Integer.parseInt(lblBitsPS.getText().substring(0, lblBitsPS.getText().length() - 9)) * 300)
+					+ " bits!!");
+			contadorWafer = 0;
+			lblWafer.setVisible(true);
 		}
 		if (accion == bonuses[2]) { // Al clicar el bonus 3, hará esto
 			bonuses[2].setVisible(false);
-			estadoBonus = false;
-			guardadoInput = true;
+			bitsPSoriginal = bitsPS;
+			bitsPS = bitsPS * 42;
+			contadorBuffer = 120;
+			lblBuffer.setVisible(true);
+
+			lblBitsPS.setText(bitsPS + " bits P/S");
 		}
-		if(accion == btnSalir) {
+		if (accion == btnSalir) {
+			if (contadorBuffer > 0) {
+				bitsPS = bitsPSoriginal;
+				lblBitsPS.setText(bitsPS + " bits P/S");
+			}
 			Functions.guardarDatosLocal();
-			if(Menu.sesion) {
+			if (Menu.sesion) {
 				Functions.guardado();
 			}
 			dispose();
@@ -476,62 +541,37 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 	@Override
 	public void run() {
-		while (abierto) {  // Bucle para ir aumentando los bits
-			try {
-				
-				Thread.sleep(100);
-				
-				tiempo += 0.1;
-				contadorGuardado += 0.1;
-				bits = Integer.parseInt(lblBits.getText().substring(0,lblBits.getText().length()-5));
-				bitsPS = Integer.parseInt(lblBitsPS.getText().substring(0,lblBitsPS.getText().length()-9)) * (BSoD + 1);
-				if (bits > 10) {
-					bits += (int) Math.floor(bitsPS / 10);
-				} else {
-					bits += bitsPS;
-				}
-				lblBits.setText(String.valueOf(bits) + " bits");
-				if(contadorGuardado >= 300 && !Menu.sesion || guardadoInput && !Menu.sesion) {
-					Functions.actualizarDatos();
-					Functions.guardarDatosLocal();
-					contadorGuardado = 0;
-					guardadoInput = false;
-				}
-				
-				if(contadorGuardado >= 300 && Menu.sesion) {
-					Functions.guardado();
-				}
-				if(bits > bitsMax) {
-					bitsMax = bits;
-					System.out.println("ola");
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+
+		while (abierto) { // Bucle para ir aumentando los bits
+
+			Functions.pasarTiempo();
 
 			int bonus = (int) Math.floor(Math.random() * 60);
 			estadoBonus = false;
 			switch (bonus) { // Condiciones para los bonuses
-			case 1:
+			case 189:
 				if (!estadoBonus) {
-					bonuses[0].setSize(60, 60);
+					bonuses[0].setSize(Functions.posicionRandomEnRango(50, 80),
+							Functions.posicionRandomEnRango(50, 80));
 					bonuses[0].setLocation(Functions.posicionRandomEnRango(10, 400),
 							Functions.posicionRandomEnRango(20, 740));
 					bonuses[0].setVisible(true);
 					estadoBonus = true;
 				}
-			case 63:
+			case 212:
 				if (!estadoBonus) {
-					bonuses[1].setSize(60, 60);
+					bonuses[1].setSize(Functions.posicionRandomEnRango(50, 80),
+							Functions.posicionRandomEnRango(50, 80));
 					bonuses[1].setLocation(Functions.posicionRandomEnRango(10, 400),
 							Functions.posicionRandomEnRango(20, 740));
 					bonuses[1].setVisible(true);
 					estadoBonus = true;
 
 				}
-			case 62:
+			case 2:
 				if (!estadoBonus) {
-					bonuses[2].setSize(60, 60);
+					bonuses[2].setSize(Functions.posicionRandomEnRango(50, 100),
+							Functions.posicionRandomEnRango(50, 100));
 					bonuses[2].setLocation(Functions.posicionRandomEnRango(10, 400),
 							Functions.posicionRandomEnRango(20, 740));
 					bonuses[2].setVisible(true);
@@ -539,8 +579,8 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 				}
 			}
-			
-			while(contadorTimestop > 0) {
+
+			while (contadorTimestop > 0) {
 				try {
 					Thread.sleep(100);
 					contadorTimestop -= 0.1;
@@ -551,28 +591,76 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 					e2.printStackTrace();
 				}
 				System.out.println(contadorTimestop);
-				if(contadorTimestop <= 0) {
+				if (contadorTimestop <= 0) {
 					lblTimeStop.setVisible(false);
 					timestopMultiplier = 0;
 					String resumir = "timeresume.wav";
 					Functions.playMusic(resumir);
 				}
 			}
+			while (contadorWafer < 1) {
+				Functions.pasarTiempo();
+				contadorWafer += 0.1;
+
+			}
+			while (contadorBuffer > 0) {
+
+				try {
+					Thread.sleep(100);
+					tiempo += 0.1;
+					lblBitsPS.setText(String.valueOf(bitsPS) + " bits P/S");
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (bits > 10) {
+					bits += (int) Math.floor(bitsPS / 10);
+				} else {
+					bits += bitsPS;
+				}
+				lblBits.setText(String.valueOf(bits) + " bits");
+				lblBuffer.setText(String.valueOf((int) contadorBuffer) + "s");
+				contadorBuffer -= 0.1;
+				if (contadorBuffer <= 0.1) {
+					bitsPS = bitsPSoriginal;
+					lblBitsPS.setText(bitsPS + " bits P/S");
+				}
+			}
+
+			lblWafer.setVisible(false);
+			lblBuffer.setVisible(false);
+			estadoBonus = false;
 		}
-		
-		
+
 	}
 
 	public static void main(String[] args) throws NumberFormatException, IOException {
+
 		juego = new Juego();
+		Functions.cargarDatosLocal();
 		bitsObtenidos = new Thread(juego);
-		
+		ActionListener guardado = new ActionListener() { // Action listener para el guardado del juego automático
+			public void actionPerformed(ActionEvent evt) {
+
+				if (!Menu.sesion) {
+					Functions.actualizarDatos();
+					Functions.guardarDatosLocal();
+				}
+
+				if (Menu.sesion) {
+					Functions.guardado();
+				}
+			}
+		};
+		timer = new Timer(60000, guardado); // Temporizador para ejecutar ese guardado cada 60 segundos
+		timer.setRepeats(true);
+		timer.start();
 		String filePath = "timestop.wav";
 		// Functions.playMusicLoop(filePath);
 		// Cargar datos de usuario si el usuario está iniciado sesión
-		
+
 		juego.setVisible(true);
-		
+
 		bitsObtenidos.start();
 	}
 
@@ -593,13 +681,13 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		if (e.getSource() == frases) {
 			frases.setText(frasesTexto[(int) Math.floor(Math.random() * 7)]);
 		}
-		
-		if(e.getSource() == btnCPU) {
+
+		if (e.getSource() == btnCPU) {
 			clicks++;
 		}
-		
-		if(e.getSource() == lblArquitectura) {
-			
+
+		if (e.getSource() == lblArquitectura) {
+
 		}
 
 	}
@@ -621,6 +709,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		// TODO Auto-generated method stub
 
 	}
+
 	@Override
 	public void windowClosing(WindowEvent e) {
 
@@ -629,7 +718,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	@Override
 	public void windowOpened(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -640,25 +729,25 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	@Override
 	public void windowIconified(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void windowDeiconified(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void windowActivated(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void windowDeactivated(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
