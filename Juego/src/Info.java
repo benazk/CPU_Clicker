@@ -47,6 +47,8 @@ public class Info extends JFrame implements ActionListener {
 	                
 	        add(panel);
 	        
+	        panel.setBackground(new Color(0,0,0));
+	        
 			setTitle("CPU Clicker");
 
 			setSize(400, 500);
@@ -64,29 +66,46 @@ public class Info extends JFrame implements ActionListener {
 		    
 		    panel.setBounds(40,20,350,450);
 		    
-		    lblTitulo = new JLabel("Estadísticas");
+		    lblTitulo = new JLabel(" Estadísticas");
 		    panel.add(lblTitulo);
-		    lblActuales = new JLabel("Bits Actuales: " + Juego.bits + " bits");
+		    lblTitulo.setForeground(Juego.color);
+		    
+		    lblActuales = new JLabel(" Bits Actuales: " + Juego.bits + " bits");
 		    panel.add(lblActuales);
-		    lblMaximos = new JLabel("Bits Máximos: " + Juego.bitsMax + " bits");
+		    lblActuales.setForeground(Juego.color);
+		    
+		    lblMaximos = new JLabel(" Bits Máximos: " + Juego.bitsMax + " bits");
 		    panel.add(lblMaximos);
-		    lblPS = new JLabel("Bits Por Segundo: " + Juego.bitsPS * (Juego.BSoD + 1) + " bits");
+		    lblMaximos.setForeground(Juego.color);
+		    
+		    lblPS = new JLabel(" Bits Por Segundo: " + Juego.bitsPS * (Juego.BSoD + 1) + " bits");
 		    panel.add(lblPS);
-		    lblPS_Raw = new JLabel("Bits Por Segundo: " + Juego.bitsPS + " bits");
+		    lblPS.setForeground(Juego.color);
+		    
+		    lblPS_Raw = new JLabel(" Bits Por Segundo: " + Juego.bitsPS + " bits");
 		    panel.add(lblPS_Raw);
-		    lblSumMejoras = new JLabel("Mejoras Totales: " + (Juego.mejora1 + Juego.mejora2 + Juego.mejora3 + Juego.mejora4));
+		    lblPS_Raw.setForeground(Juego.color);
+		    
+		    lblSumMejoras = new JLabel(" Mejoras Totales: " + (Juego.mejora1 + Juego.mejora2 + Juego.mejora3 + Juego.mejora4));
 		    panel.add(lblSumMejoras);
-		    lblBitsPC = new JLabel("Bits Por Click: " + Juego.bitsPC + " bits");
+		    lblSumMejoras.setForeground(Juego.color);
+		    
+		    lblBitsPC = new JLabel(" Bits Por Click: " + Juego.bitsPC + " bits");
 		    panel.add(lblBitsPC);
+		    lblBitsPC.setForeground(Juego.color);
+		    
 		    if(Juego.tiempo < 3600) {
-		    	lblMins = new JLabel("Tiempo Jugado: " + Juego.tiempo + " mins");
+		    	lblMins = new JLabel(" Tiempo Jugado: " + Juego.tiempo + " mins");
 			    panel.add(lblMins);
+			    lblMins.setForeground(Juego.color);
 		    }
 		    else {
-		    	lblMins = new JLabel("Tiempo Jugado: " + (df.format(Juego.tiempo / 60)) + "h");
+		    	lblMins = new JLabel(" Tiempo Jugado: " + (df.format(Juego.tiempo / 60)) + "h");
 			    panel.add(lblMins);
+			    lblMins.setForeground(Juego.color);
 		    }
-		    lblArquitectura = new JLabel("Magnus");
+		    lblArquitectura = new JLabel(" Nombre de la arquitectura: Magnus");
+		    lblArquitectura.setForeground(Juego.color);
 		    panel.add(lblArquitectura);
 		    lblVersion = new JLabel("Versión 0.5");
 		    panel.add(lblVersion);

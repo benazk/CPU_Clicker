@@ -15,6 +15,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
@@ -31,12 +32,15 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.Timer;
+import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
+import javax.swing.plaf.ColorUIResource;
 
 @SuppressWarnings("serial")
 public class Juego extends JFrame implements ActionListener, Runnable, MouseListener, WindowListener {
 
 	static String[] frasesTexto = {
-			"<html>los ticks son una manera de medir el tiempo utilizada en el juego Minecraft, cada Tick equivale a 50 milisegundos</html>",
+			"<html>Los ticks son una manera de medir el tiempo utilizada en el juego Minecraft, cada Tick equivale a 50 milisegundos</html>",
 			"<html>El cache es un componente que guarda datos para que al volver a acceder a ellos, lo haga más rápido</html>",
 			"<html>FPS significa Fotogramas por Segundo, se utiliza para medir cuantas imágenes muestra por segundo un dispositivo</html>",
 			"<html>El transistor es el dispositivo que lleva la corriente por el procesador</html>",
@@ -123,7 +127,11 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 	static Connection conn; // Variable con la conexión
 
-	Color color = new Color(88, 184, 4);
+	public static Color color = new Color(88, 184, 4);
+	
+	static boolean panelActivo=false; 
+	
+	UIManager manager=new UIManager();
 	
 	Juego() throws NumberFormatException, IOException {
 
@@ -155,9 +163,11 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 		frame.setBackground(new Color(50,50,50));
 		
+		
 		btnSalir = new JButton("Volver al Menú");
 		btnSalir.setLocation(0, 0);
 		btnSalir.setSize(150, 50);
+		btnSalir.setForeground(color);
 		frame.add(btnSalir);
 		btnSalir.addActionListener(this);
 
@@ -186,16 +196,28 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			case 7:
 		}
 
+		LinkedList<Object> a=new LinkedList<Object>();
+		a.add(0.3);
+		a.add(0.3);
+		a.add(new ColorUIResource(0,0,0));
+		a.add(new ColorUIResource(60, 60, 60));
+		a.add(new ColorUIResource(100, 100, 100));
+		
+		UIManager.put("Button.gradient",a);
+		
 		lblBits = new JLabel("0 bits");
 		lblBits.setLocation(175, 330);
 		lblBits.setSize(200, 20);
 		lblBits.setFont(sizedFont);
+		
 		frame.add(lblBits);
 
 		lblBitsPS = new JLabel("0 bits P/S");
 		lblBitsPS.setLocation(175, 360);
 		lblBitsPS.setSize(150, 20);
+		lblBitsPS.setForeground(color);
 		frame.add(lblBitsPS);
+		
 
 		lblBitsPC = new JLabel(bitsPC + " bits");
 		lblBitsPC.setLocation(Functions.posicionRandomEnRango(70, 340), Functions.posicionRandomEnRango(70, 340));
@@ -206,18 +228,23 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		frases.setText(frasesTexto[(int) Math.floor(Math.random() * 7)]);
 		frases.setSize(350, 45);
 		frases.setLocation(400, 100);
+		frases.setForeground(color);
 		frame.add(frases);
 		frases.addMouseListener(this);
 
-		btnInfo = new JButton("Información");
+		btnInfo = new JButton("Opciones");
 		btnInfo.setLocation(400, 600);
 		btnInfo.setSize(200, 60);
+		btnInfo.setForeground(color);
+		btnInfo.setBorder(new LineBorder(new Color(0,255,0)));
 		frame.add(btnInfo);
 		btnInfo.addActionListener(this);
 
 		btnEst = new JButton("Estadísticas	");
 		btnEst.setLocation(600, 600);
 		btnEst.setSize(200, 60);
+		btnEst.setForeground(color);
+		btnEst.setBorder(new LineBorder(new Color(0,255,0)));
 		frame.add(btnEst);
 		btnEst.addActionListener(this);
 
@@ -228,6 +255,10 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		btnBSoD.add(lblBSoD_Precio);
 		btnBSoD.setLocation(820, 30);
 		btnBSoD.setSize(400, 100);
+		lblBSoDNombre.setForeground(color);
+		lblBSoD_Cant.setForeground(color);
+		lblBSoD_Precio.setForeground(color);
+		btnBSoD.setBorder(new LineBorder(new Color(0,255,0)));
 		frame.add(btnBSoD);
 		btnBSoD.addActionListener(this);
 
@@ -239,6 +270,10 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		btnMejora1.add(lblCostoM1);
 		btnMejora1.setLocation(900, 150);
 		btnMejora1.setSize(250, 60);
+		lblCantidadM1.setForeground(color);
+		lblNombreM1.setForeground(color);
+		lblCostoM1.setForeground(color);
+		btnMejora1.setBorder(new LineBorder(new Color(0,255,0)));
 		frame.add(btnMejora1);
 		btnMejora1.addActionListener(this);
 
@@ -250,6 +285,10 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		btnMejora2.add(lblCostoM2);
 		btnMejora2.setLocation(900, 250);
 		btnMejora2.setSize(250, 60);
+		lblCantidadM2.setForeground(color);
+		lblNombreM2.setForeground(color);
+		lblCostoM2.setForeground(color);
+		btnMejora2.setBorder(new LineBorder(new Color(0,255,0)));
 		frame.add(btnMejora2);
 		btnMejora2.addActionListener(this);
 
@@ -261,6 +300,10 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		btnMejora3.add(lblCostoM3);
 		btnMejora3.setLocation(900, 350);
 		btnMejora3.setSize(250, 60);
+		lblCantidadM3.setForeground(color);
+		lblNombreM3.setForeground(color);
+		lblCostoM3.setForeground(color);
+		btnMejora3.setBorder(new LineBorder(new Color(0,255,0)));
 		frame.add(btnMejora3);
 		btnMejora3.addActionListener(this);
 
@@ -272,6 +315,10 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		btnMejora4.add(lblCostoM4);
 		btnMejora4.setLocation(900, 450);
 		btnMejora4.setSize(250, 60);
+		lblCantidadM4.setForeground(color);
+		lblNombreM4.setForeground(color);
+		lblCostoM4.setForeground(color);
+		btnMejora4.setBorder(new LineBorder(new Color(0,255,0)));
 		frame.add(btnMejora4);
 		btnMejora4.addActionListener(this);
 
@@ -304,7 +351,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		frame.add(lblBuffer);
 
 		info = new Info();
-		Info.panel.setSize(350, 450);
+		Info.panel.setSize(400, 450);
 		Info.panel.setLocation(400, 200);
 		frame.add(Info.panel);
 		Info.panel.setVisible(false);
@@ -411,8 +458,19 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			}
 		}
 		if (accion == btnEst) {
+			if(panelActivo==false) {
 			Info.panel.setVisible(true);
+			panelActivo=true;
+			}
+			
+			else if(panelActivo) {
+			Info.panel.setVisible(false);
+			panelActivo=false;
+			}
 		}
+		
+		
+		
 		if (accion == btnBSoD) {
 			// Codigo para reiniciar en el caso de un BSoD (Pone todos los datos excepto el
 			// BSoD a 0)
