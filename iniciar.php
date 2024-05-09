@@ -8,9 +8,8 @@
   }
 </style>
 <?php
-
+$_SESSION['sesion'] = null;
 session_start();
-$expira = time() + 2678400;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") { // Solo ejecutar este código si el formulario se ha enviado
     // Guardo el contenido de los campos en variables de php
@@ -49,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { // Solo ejecutar este código si el 
     if ($userBBDD == $nombre_usuario && $encrypt == $passwordBBDD) { 
       
         $_SESSION['sesion'] = $nombre_usuario;
-        setcookie("sesion",$nombre_usuario,$expira);
+        echo $_SESSION['sesion'];
         echo "<h1 style= 'font-family:hack; text-align:center; color:rgb(255, 239, 187);'>Sesión iniciada correctamente</h1>";
         echo "<ul style='position:relative; left:42%; color:rgb(160, 160, 160);' >
             <li style= 'font-family:hack;'>Nombre de usuario: $nombre_usuario</li>
@@ -59,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { // Solo ejecutar este código si el 
     }
     else{
         echo "<h1 style= 'font-family:hack; text-align:center; color:rgb(255, 239, 187);'>Nombre de usuario incorrecto</h1>";
-        echo "<h2 style= 'font-family:hack;  text-align:center;'><a href='..' style= ' color:#5cccfc;'>Intentarlo de nuevo</a></h2>";
+        echo "<h2 style= 'font-family:hack;  text-align:center;'><a href='CrearCuenta.php' style= ' color:#5cccfc;'>Intentarlo de nuevo</a></h2>";
     }
     
 

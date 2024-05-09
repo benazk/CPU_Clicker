@@ -22,7 +22,7 @@ $password = "";
 $basedatos = "CPUClicker";
 
 
-if (!isset($_SESSION['sesion'])) {
+if ($_SESSION['sesion'] == null) {
     $abrirCerrar = "Iniciar Sesión";
     $user = "guest";
     $bits = 0;
@@ -33,11 +33,12 @@ if (!isset($_SESSION['sesion'])) {
     $mejorasTotales = 0;
     $BSoD = 0;
     if(isset($_POST["sesion"])){
-        $estadoSesion = "CrearCuenta.php";
+        $estadoSesion = "";
     }
 
 
 } else {
+    $user = $usuario_sesion;
     if(isset($_POST["sesion"])){
         session_abort();
         $estadoSesion = "./";
@@ -119,7 +120,7 @@ if (!isset($_SESSION['sesion'])) {
                 <div class="content margin_right_10">
 
                     <div id="usuario">
-                        <p class="padding"><?php echo $usuario_sesion ?>@<?php echo $usuario_sesion ?>:$ ~</p>
+                        <p class="padding"><?php echo $user ?>@<?php echo $user ?>:$ ~ cat Datos_de_usuario.txt</p>
                         <h1 class="padding"><?php echo "$bits" ?> Bits</h1>
                         <h2 class="padding">Tiempo Jugado: <?php echo $tiempoJugado ?> mins </h2>
                         <h2 class="padding">Bits maximos: <?php echo $bitsMaximos ?> Bits</h2>
@@ -138,7 +139,7 @@ if (!isset($_SESSION['sesion'])) {
 
 
                     <div class="latest_news border_bottom">
-                       <form action="#" method="post"> <div class="header_03"><a href=<?php echo $estadoSesion?> id = "sesion"><?php echo $abrirCerrar?></a></div></form>
+                       <div class="header_03"><a href="CrearCuenta.php" id = "sesion"><?php echo $abrirCerrar?></a></div>
 
                     </div>
 
