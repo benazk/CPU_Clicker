@@ -37,7 +37,7 @@ if (!isset($_SESSION['sesion'])) {
 
 
 } else {
-    
+
     $abrirCerrar = "Cerrar Sesión";
     $conn = new mysqli($servidor, $usuario, $password, $basedatos);
 
@@ -101,9 +101,9 @@ if (!isset($_SESSION['sesion'])) {
             <div id="menu">
                 <ul>
                     <li><a href="index.php" class="current">Inicio</a></li>
-                    <li><a href="wiki.html">Wiki</a></li>
-                    <li><a href="actualizaciones.html">Actualizaciones</a></li>
-                    <li><a href="juego.html">Juego</a></li>
+                    <li><a href="wiki.php">Wiki</a></li>
+                    <li><a href="actualizaciones.php">Actualizaciones</a></li>
+                    <li><a href="juego.php">Juego</a></li>
 
                 </ul>
             </div> <!-- end of menu -->
@@ -141,12 +141,12 @@ if (!isset($_SESSION['sesion'])) {
                     <div class="margin_bottom_10"></div>
 
                     <div class="latest_news border_bottom">
-                        <div class="header_03"><a href="creditos.html">Créditos</a></div>
+                        <div class="header_03"><a href="creditos.php">Créditos</a></div>
 
                     </div>
                     <div class="margin_bottom_10"></div>
 
-                    <div class="header_03"><a href="cuenta.html">Descargar Juego</a></div>
+                    <div class="header_03"><a href="cuenta.php">Descargar Juego</a></div>
                 </div> <!-- end of right side bar -->
 
 
