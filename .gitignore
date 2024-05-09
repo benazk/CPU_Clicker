@@ -1,1 +1,4 @@
-/bin/
+**/bin/
+Juego/datos.txt
+Juego/sesion.txt
+Juego/src/Functions.java
