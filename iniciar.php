@@ -33,8 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { // Solo ejecutar este código si el 
     }
     // Variables en las que guardo consultas a la base de datos ("$sql_usuarios")
 
-    $userBBDD;
-    $passwordBBDD;
+    $userBBDD = null;
+    $passwordBBDD = null;
 
    
 
@@ -51,14 +51,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { // Solo ejecutar este código si el 
         $_SESSION['sesion'] = $nombre_usuario;
         setcookie("sesion",$nombre_usuario,$expira);
         echo "<h1 style= 'font-family:hack; text-align:center; color:rgb(255, 239, 187);'>Sesión iniciada correctamente</h1>";
-        echo "<ul style='position:relative; left:42%;'>
+        echo "<ul style='position:relative; left:42%; color:rgb(160, 160, 160);' >
             <li style= 'font-family:hack;'>Nombre de usuario: $nombre_usuario</li>
             </ul>";
         echo "<h2 style= 'font-family:hack;  text-align:center;'><a href='index.php' style= ' color:#5cccfc;'>Volver al Menú</a></h2>";
 
     }
     else{
-        echo "$userBBDD". " " ."$usuario" ;
+        echo "<h1 style= 'font-family:hack; text-align:center; color:rgb(255, 239, 187);'>Nombre de usuario incorrecto</h1>";
+        echo "<h2 style= 'font-family:hack;  text-align:center;'><a href='..' style= ' color:#5cccfc;'>Intentarlo de nuevo</a></h2>";
     }
     
 
