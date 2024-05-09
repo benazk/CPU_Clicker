@@ -2,6 +2,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php
 include ("iniciar.php");
+session_abort();
 // Saioa irekita ez badago joan hasierara identifikatu dadin
 $idUser = null;
 $usuario_sesion = $_SESSION['sesion'];
@@ -32,16 +33,11 @@ if (!isset($_SESSION['sesion'])) {
     $clicsHechos = 0;
     $mejorasTotales = 0;
     $BSoD = 0;
-    if(isset($_POST["sesion"])){
-        $estadoSesion = "CrearCuenta.php";
-    }
+    
 
 
 } else {
-    if(isset($_POST["sesion"])){
-        session_abort();
-        $estadoSesion = "./";
-    }
+    
     $abrirCerrar = "Cerrar Sesión";
     $conn = new mysqli($servidor, $usuario, $password, $basedatos);
 
@@ -138,7 +134,7 @@ if (!isset($_SESSION['sesion'])) {
 
 
                     <div class="latest_news border_bottom">
-                       <form action="#" method="post"> <div class="header_03"><a href=<?php echo $estadoSesion?> id = "sesion"><?php echo $abrirCerrar?></a></div></form>
+                    <div class="header_03"><a href="CrearCuenta.php" id = "sesion"><?php echo $abrirCerrar?></a></div>
 
                     </div>
 
