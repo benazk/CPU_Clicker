@@ -110,11 +110,9 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	public static int mejora1, mejora2, mejora3, mejora4; // Variables con la cantidad de mejoras individuales
 
 	static double contadorTimestop = 0, contadorBuffer, contadorWafer = 1; // Contadores para parar el tiempo, tener un
-																		   // bonus de bits por 120 segundos y que un
-																		   // texto apareza en pantalla por 1 segundo
-	static public Font font;	//Fuente del juego											
-	static public Font sizedFont; 
-	
+																			// bonus de bits por 120 segundos y que un
+																			// texto apareza en pantalla por 1 segund
+
 	static long bitsTimestop, bitsPCoriginal, bitsPSoriginal;
 
 	static int timestopMultiplier;
@@ -125,32 +123,21 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 	static Timer timer;
 
+	static Timer timerAnimacion;
+
 	static Connection conn; // Variable con la conexión
 
 	public static Color color = new Color(88, 184, 4);
 	
-	static boolean panelActivo=false; 
-	
-	UIManager manager=new UIManager();
+	static boolean panelActivo = false;
 	
 	Juego() throws NumberFormatException, IOException {
 
 		// Personalización
 		Container frame = getContentPane();
-		InputStream is = Juego.class.getResourceAsStream("JetBrainsMono-Light.ttf");
-		try {
-			font = Font.createFont(Font.TRUETYPE_FONT, is);
-			sizedFont = font.deriveFont(20f);
-		} catch (FontFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+
 		setTitle("CPU Clicker");
-		
+
 		setSize(1366, 768);
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -162,7 +149,6 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		getRootPane().setWindowDecorationStyle(JRootPane.NONE);
 
 		frame.setBackground(new Color(50,50,50));
-		
 		
 		btnSalir = new JButton("Volver al Menú");
 		btnSalir.setLocation(0, 0);
@@ -185,15 +171,15 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		btnCPU.addActionListener(this);
 		btnCPU.addMouseListener(this);
 		switch (BSoD) {
-			case 0:
-				btnCPU.setBackground(new Color(180,180,180));
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-			case 5:
-			case 6:
-			case 7:
+		case 0:
+			btnCPU.setBackground(new Color(180, 180, 180));
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+		case 7:
 		}
 
 		LinkedList<Object> a=new LinkedList<Object>();
@@ -208,8 +194,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		lblBits = new JLabel("0 bits");
 		lblBits.setLocation(175, 330);
 		lblBits.setSize(200, 20);
-		lblBits.setFont(sizedFont);
-		
+		lblBits.setForeground(color);
 		frame.add(lblBits);
 
 		lblBitsPS = new JLabel("0 bits P/S");
@@ -329,6 +314,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		lblTimeStop = new JLabel("15");
 		lblTimeStop.setLocation(200, 40);
 		lblTimeStop.setSize(100, 20);
+		lblTimeStop.setForeground(color);
 		frame.add(lblTimeStop);
 		lblTimeStop.setVisible(false);
 
@@ -421,11 +407,11 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				lblBits.setText(String.valueOf(bits) + " bits");
 				mejora2++;
 				lblCantidadM2.setText(String.valueOf(mejora2));
-				lblBitsPS.setText(String
-						.valueOf(Integer.parseInt(lblBitsPS.getText().substring(0, lblBitsPS.getText().length() - 9))
-								+ Functions.mejora2(mejora2))
-						+ " bits P/S");
-				lblCostoM2.setText(String.valueOf(Functions.mejora2Price(mejora2)) + " bits");
+				bitsPS = Integer.parseInt(lblBitsPS.getText().substring(0, lblBitsPS.getText().length() - 9))
+						+ Functions.mejora2(mejora2);
+				lblBitsPS.setText(bitsPS + " bits P/S");
+				lblCostoM2.setText(String.valueOf(Functions.mejora2Price(mejora2)) + " bits");				
+				bitsPSoriginal = bitsPS;
 			}
 		}
 
@@ -435,12 +421,12 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				bits -= Functions.mejora3Price(mejora3);
 				lblBits.setText(String.valueOf(bits) + " bits");
 				mejora3++;
+				bitsPS = Integer.parseInt(lblBitsPS.getText().substring(0, lblBitsPS.getText().length() - 9))
+						+ Functions.mejora3(mejora3);
 				lblCantidadM3.setText(String.valueOf(mejora3));
-				lblBitsPS.setText(String
-						.valueOf(Integer.parseInt(lblBitsPS.getText().substring(0, lblBitsPS.getText().length() - 9))
-								+ Functions.mejora3(mejora3))
-						+ " bits P/S");
+				lblBitsPS.setText(bitsPS + " bits P/S");
 				lblCostoM3.setText(String.valueOf(Functions.mejora3Price(mejora3)) + " bits");
+				bitsPSoriginal = bitsPS;
 			}
 		}
 		if (accion == btnMejora4) {
@@ -448,13 +434,13 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 					.mejora4Price(mejora4)) {
 				bits -= Functions.mejora4Price(mejora4);
 				lblBits.setText(String.valueOf(bits) + " bits");
+				bitsPS = Integer.parseInt(lblBitsPS.getText().substring(0, lblBitsPS.getText().length() - 9))
+						+ Functions.mejora4(mejora4);
 				mejora4++;
 				lblCantidadM4.setText(String.valueOf(mejora4));
-				lblBitsPS.setText(String
-						.valueOf(Integer.parseInt(lblBitsPS.getText().substring(0, lblBitsPS.getText().length() - 9))
-								+ Functions.mejora4(mejora4))
-						+ " bits P/S");
+				lblBitsPS.setText(bitsPS + " bits P/S");
 				lblCostoM4.setText(String.valueOf(Functions.mejora4Price(mejora4)) + " bits");
+				bitsPSoriginal = bitsPS;
 			}
 		}
 		if (accion == btnEst) {
@@ -577,6 +563,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			bonuses[2].setVisible(false);
 			bitsPSoriginal = bitsPS;
 			bitsPS = bitsPS * 42;
+			lblBitsPS.setText(String.valueOf(bitsPS) + " bits P/S");
 			contadorBuffer = 120;
 			lblBuffer.setVisible(true);
 
@@ -666,7 +653,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				try {
 					Thread.sleep(100);
 					tiempo += 0.1;
-					lblBitsPS.setText(String.valueOf(bitsPS) + " bits P/S");
+					
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -680,7 +667,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				lblBuffer.setText(String.valueOf((int) contadorBuffer) + "s");
 				contadorBuffer -= 0.1;
 				if (contadorBuffer <= 0.1) {
-					bitsPS = bitsPSoriginal;
+					bitsPS = bitsPSoriginal; 	
 					lblBitsPS.setText(bitsPS + " bits P/S");
 				}
 			}
@@ -737,7 +724,23 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			bits += bitsPC * (clicksBonus ^ 2);
 		}
 		if (e.getSource() == frases) {
+			timer.restart();
 			frases.setText(frasesTexto[(int) Math.floor(Math.random() * 7)]);
+			timerAnimacion = new Timer(100, new ActionListener() {
+				int x = 0;
+
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("Chorizo");
+					frases.setForeground(new Color(88, 184, 4, x++));
+					if (x == 255) {
+						timer.stop();
+						System.out.println("Chorizo");
+					}
+				}
+
+			});
+
+			timer.start();
 		}
 
 		if (e.getSource() == btnCPU) {

@@ -1,19 +1,3 @@
-<?php
-include ("contraseña-olvidada-correo.php");
-
-if($_SERVER["REQUEST_METHOD"] == "POST") {
-
-$cod_input = $_POST["codigoRecuperar"];
-echo $cod_input . " " . $codigo;
-if ($cod_input == $codigo) {
-    header("Location: cambiar-contraseña.php");
-    exit;
-} else {
-    echo '<script>alert("Código incorrecto")</script>';
-}
-
-}
-?>
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -76,3 +60,21 @@ if ($cod_input == $codigo) {
     </div>
 </body>
 </html>
+
+<?php
+include ("contraseña-olvidada-correo.php");
+
+if($_SERVER["REQUEST_METHOD"] == "POST") {
+
+$cod_input = $_POST["codigoRecuperar"];
+echo $cod_input . " " . $codigo;
+if ($cod_input == $codigo) {
+    echo "ei muy buenas a todos";
+    /*header("Location: cambiar-contraseña.php");
+    exit;*/
+} else {
+    echo '<script>alert("Código incorrecto")</script>';
+}
+
+}
+?>

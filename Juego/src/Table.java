@@ -112,6 +112,7 @@ public class Table {
 				row[3] = textPhone.getText();
 				
 				model.addRow(row);
+				
 			}
 			});
 		btnAnnadir.setBounds(10, 341, 188, 23);

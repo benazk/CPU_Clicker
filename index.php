@@ -13,7 +13,8 @@ $tiempoJugado = null;
 $clicsHechos = null;
 $mejorasTotales = null;
 $BSoD = null;
-
+$estadoSesion = null;
+$abrirCerrar = null;
 
 $servidor = "localhost";
 $usuario = "root";
@@ -22,6 +23,7 @@ $basedatos = "CPUClicker";
 
 
 if (!isset($_SESSION['sesion'])) {
+    $abrirCerrar = "Iniciar Sesión";
     $user = "guest";
     $bits = 0;
     $bitsMaximos = 0;
@@ -30,9 +32,17 @@ if (!isset($_SESSION['sesion'])) {
     $clicsHechos = 0;
     $mejorasTotales = 0;
     $BSoD = 0;
+    if(isset($_POST["sesion"])){
+        $estadoSesion = "CrearCuenta.php";
+    }
 
 
 } else {
+    if(isset($_POST["sesion"])){
+        session_abort();
+        $estadoSesion = "./";
+    }
+    $abrirCerrar = "Cerrar Sesión";
     $conn = new mysqli($servidor, $usuario, $password, $basedatos);
 
     if ($conn->connect_error) {
@@ -64,7 +74,7 @@ if (!isset($_SESSION['sesion'])) {
     if ($row = $resultMJ->fetch_assoc()) {
         $mejorasTotales = $row["sumaMejoras"];
     }
-
+    
 
 
 }
@@ -94,7 +104,7 @@ if (!isset($_SESSION['sesion'])) {
 
             <div id="menu">
                 <ul>
-                    <li><a href="index.html" class="current">Inicio</a></li>
+                    <li><a href="index.php" class="current">Inicio</a></li>
                     <li><a href="wiki.html">Wiki</a></li>
                     <li><a href="actualizaciones.html">Actualizaciones</a></li>
                     <li><a href="juego.html">Juego</a></li>
@@ -128,7 +138,7 @@ if (!isset($_SESSION['sesion'])) {
 
 
                     <div class="latest_news border_bottom">
-                        <div class="header_03"><a href="CrearCuenta.php">Iniciar Sesion</a></div>
+                       <form action="#" method="post"> <div class="header_03"><a href=<?php echo $estadoSesion?> id = "sesion"><?php echo $abrirCerrar?></a></div></form>
 
                     </div>
 
