@@ -2,6 +2,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php
 include ("iniciar.php");
+session_abort();
 // Saioa irekita ez badago joan hasierara identifikatu dadin
 $idUser = null;
 $usuario_sesion = $_SESSION['sesion'];
@@ -106,9 +107,9 @@ if ($_SESSION['sesion'] == null) {
             <div id="menu">
                 <ul>
                     <li><a href="index.php" class="current">Inicio</a></li>
-                    <li><a href="wiki.html">Wiki</a></li>
-                    <li><a href="actualizaciones.html">Actualizaciones</a></li>
-                    <li><a href="juego.html">Juego</a></li>
+                    <li><a href="wiki.php">Wiki</a></li>
+                    <li><a href="actualizaciones.php">Actualizaciones</a></li>
+                    <li><a href="juego.php">Juego</a></li>
 
                 </ul>
             </div> <!-- end of menu -->
@@ -146,12 +147,12 @@ if ($_SESSION['sesion'] == null) {
                     <div class="margin_bottom_10"></div>
 
                     <div class="latest_news border_bottom">
-                        <div class="header_03"><a href="creditos.html">Créditos</a></div>
+                        <div class="header_03"><a href="creditos.php">Créditos</a></div>
 
                     </div>
                     <div class="margin_bottom_10"></div>
 
-                    <div class="header_03"><a href="cuenta.html">Descargar Juego</a></div>
+                    <div class="header_03"><a href="cuenta.php">Descargar Juego</a></div>
                 </div> <!-- end of right side bar -->
 
 

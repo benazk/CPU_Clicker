@@ -5,6 +5,7 @@
 <title>Game Website Template, Free Download, XHTML/CSS Layout</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
+<link rel="icon" type="image/x-icon" href="images/iban.png">
 <link href="wiki.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -27,9 +28,9 @@
     <div id="menu">
 	    <ul>
             <li><a href="index.php" >Inicio</a></li>
-            <li><a href="wiki.html" >Wiki</a></li>
-            <li><a href="actualizaciones.html" class="current">Actualizaciones</a></li>
-            <li><a href="juego.html">Juego</a></li>
+            <li><a href="wiki.php" >Wiki</a></li>
+            <li><a href="actualizaciones.php" class="current">Actualizaciones</a></li>
+            <li><a href="juego.php">Juego</a></li>
             
         </ul>
     </div> <!-- end of menu -->
@@ -51,7 +52,7 @@
 
         <div class="right">
             
-            <div class="header_01">Botones</div>
+            <div class="header_01">Menú</div>
             <div class="margin_bottom_20"></div>
 
             
@@ -63,12 +64,12 @@
             <div class="margin_bottom_10"></div>
             
 			<div class="latest_news border_bottom">
-                <div class="header_03"><a href="creditos.html">Créditos</a></div>
+                <div class="header_03"><a href="creditos.php">Créditos</a></div>
                
 			</div>
             <div class="margin_bottom_10"></div>
             
-            <div class="header_03" ><a href="cuenta.html">Descargar Juego</a></div>                    
+            <div class="header_03" ><a href="cuenta.php">Descargar Juego</a></div>                    
         </div> <!-- end of right side bar -->
         
         

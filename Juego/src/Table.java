@@ -51,8 +51,8 @@ public class Table {
 		
 		JScrollPane panel = new JScrollPane(table);
 		panel.setForeground(Color.RED);
-		panel.setBackground(Color.white);
-		panel.setBounds(10,10,434,223);
+		panel.setBackground(new Color(255, 255, 255));
+		panel.setBounds(10,0,434,175);
 		frame.getContentPane().add(panel);
 		
 		textFirstName = new JTextField();
@@ -112,15 +112,16 @@ public class Table {
 				row[3] = textPhone.getText();
 				
 				model.addRow(row);
+				
 			}
 			});
-		btnAnnadir.setBounds(20, 341, 188, 23);
+		btnAnnadir.setBounds(10, 341, 188, 23);
 		frame.getContentPane().add(btnAnnadir);
 		
 		//BTN ELIMINAR
 		JButton btnEliminar = new JButton("Eliminar");
 		btnEliminar.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		btnEliminar.setBounds(246, 341, 175, 23);
+		btnEliminar.setBounds(269, 341, 175, 23);
 		frame.getContentPane().add(btnEliminar);
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
