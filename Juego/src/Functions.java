@@ -1,6 +1,10 @@
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,6 +13,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -16,10 +22,16 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.Line;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.Timer;
 
@@ -293,8 +305,8 @@ public class Functions {
 			PreparedStatement stmtMins = conn.prepareStatement(
 					"UPDATE estadisticas SET minutosJugados = " + tiempo + " WHERE idUsuario = " + idUsuario + ";");
 			stmtMins.executeUpdate();
-			PreparedStatement stmtArq = conn.prepareStatement(
-					"UPDATE estadisticas SET nombreArquitectura = " + arquitectura + " WHERE idUsuario = " + idUsuario + ";");
+			PreparedStatement stmtArq = conn.prepareStatement("UPDATE estadisticas SET nombreArquitectura = "
+					+ arquitectura + " WHERE idUsuario = " + idUsuario + ";");
 			stmtArq.executeUpdate();
 			PreparedStatement stmtSum = conn.prepareStatement(
 					"UPDATE mejoras SET sumaMejoras = " + sumMejoras + " WHERE idUsuario = " + idUsuario + ";");
@@ -357,6 +369,7 @@ public class Functions {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("Guardar Datos");
 
 	}
 
@@ -392,6 +405,7 @@ public class Functions {
 		Juego.lblCostoM3.setText(String.valueOf(Functions.mejora3Price(Juego.mejora3)) + " bits");
 		Juego.lblCostoM4.setText(String.valueOf(Functions.mejora4Price(Juego.mejora4)) + " bits");
 		Juego.lblArquitectura.setText(Juego.arquitectura);
+		System.out.println("Cargar datos");
 	}
 
 	public static void actualizarDatos() {
@@ -403,13 +417,16 @@ public class Functions {
 		Juego.mejora2 = Integer.parseInt(Juego.lblCantidadM2.getText());
 		Juego.mejora3 = Integer.parseInt(Juego.lblCantidadM3.getText());
 		Juego.mejora4 = Integer.parseInt(Juego.lblCantidadM4.getText());
+		System.out.println("Actualizar Datos");
 	}
+
 	public static void pasarTiempo() {
 		try {
 			Thread.sleep(100);
 			Juego.tiempo += 0.1;
-			Juego.bits = Integer.parseInt(Juego.lblBits.getText().substring(0,Juego.lblBits.getText().length()-5));
-			Juego.bitsPS = Integer.parseInt(Juego.lblBitsPS.getText().substring(0,Juego.lblBitsPS.getText().length()-9)) * (Juego.BSoD + 1);
+			Juego.bits = Integer.parseInt(Juego.lblBits.getText().substring(0, Juego.lblBits.getText().length() - 5));
+			Juego.bitsPS = Integer.parseInt(
+					Juego.lblBitsPS.getText().substring(0, Juego.lblBitsPS.getText().length() - 9)) * (Juego.BSoD + 1);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -420,11 +437,77 @@ public class Functions {
 			Juego.bits += Juego.bitsPS;
 		}
 		Juego.lblBits.setText(String.valueOf(Juego.bits) + " bits");
-		if(Juego.bits > Juego.bitsMax) {
+		if (Juego.bits > Juego.bitsMax) {
 			Juego.bitsMax = Juego.bits;
 		}
-		
+
+	}
+
+	private static LinkedList<Line> altavoces = new LinkedList<Line>();
+
+	public final static void buscarAltavoces() {
+		Mixer.Info[] mixers = AudioSystem.getMixerInfo();
+
+		for (Mixer.Info mixerInfo : mixers) {
+			if (!mixerInfo.getName().equals("Java Sound Audio Engine"))
+				continue;
+
+			Mixer mixer = AudioSystem.getMixer(mixerInfo);
+			Line.Info[] lines = mixer.getSourceLineInfo();
+
+			for (Line.Info info : lines) {
+
+				try {
+					Line line = mixer.getLine(info);
+					altavoces.add(line);
+
+				} catch (LineUnavailableException e) {
+					e.printStackTrace();
+				} catch (IllegalArgumentException iaEx) {
+				}
+			}
+		}
+	}
+
+	static {
+		buscarAltavoces();
+	}
+
+	public static void cambiarVolumen(float level) {
+		System.out.println("setting volume to " + level);
+		for (Line line : altavoces) {
+			try {
+				line.open();
+				FloatControl control = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
+				control.setValue(limitar(control, level));
+			} catch (LineUnavailableException e) {
+				continue;
+			} catch (java.lang.IllegalArgumentException e) {
+				continue;
+			}
+
+		}
+	}
+
+	private static float limitar(FloatControl control, float level) 
+	{
+		return Math.min(control.getMaximum(), Math.max(control.getMinimum(), level));
 	}
 	
+	@SuppressWarnings("unused")
+	public static void pagWeb(JButton btnPagWeb, final String url, String text) {
+        btnPagWeb.setText("<html><a href=\"\" style= 'text-decoration= none'>"+text+"</a></html>");
+        btnPagWeb.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnPagWeb.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                    try {
+                            Desktop.getDesktop().browse(new URI(url));
+                    } catch (URISyntaxException | IOException ex) {
+                            //It looks like there's a problem
+                    }
+            }
+        });
+    }
 
 }

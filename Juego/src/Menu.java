@@ -9,26 +9,26 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.border.LineBorder;
+import javax.swing.plaf.ColorUIResource;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.io.*;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Menu extends JFrame implements ActionListener {
 
-	public static JButton btnJugar, btnScoreBoard, btnIniciarSesion, btnCerrarSesion, btnAtras;
+	public static JButton btnJugar, btnScoreBoard, btnIniciarSesion, btnCerrarSesion;
 	JLabel lblNombre;
 
 	public static String usuario = null;
 
 	public static boolean sesion = false;
+
 
 	Menu() {
 		File file = new File("sesion.txt");
@@ -42,24 +42,10 @@ public class Menu extends JFrame implements ActionListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		try {
-			// create the font to use. Specify the size!
-			System.out.println("hola");
-			Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("font\\JetBrainsMono-Light.ttf"))
-					.deriveFont(20f);
-			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-			// register the font
-			ge.registerFont(customFont);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (FontFormatException e) {
-			e.printStackTrace();
-
-		}
-
+		
 		setLayout(null);
 		setTitle("Menú");
-		setLayout(new GridLayout(6, 1));
+		setLayout(new GridLayout(5, 1));
 
 		setVisible(true);
 		setSize(1366, 768);
@@ -73,49 +59,37 @@ public class Menu extends JFrame implements ActionListener {
 				"<html>░█▀▀░█▀█░█░█░░░█▀▀░█░░░▀█▀░█▀▀░█░█░█▀▀░█▀▄<br>░█░░░█▀▀░█░█░░░█░░░█░░░░█░░█░░░█▀▄░█▀▀░█▀▄<br>░▀▀▀░▀░░░▀▀▀░░░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀░▀ </html>");
 		add(lblNombre);
 		lblNombre.setHorizontalAlignment(JLabel.CENTER);
-
-//lblNombre.setLocation(400,0);
 		lblNombre.setSize(250, 90);
-
-		lblNombre.setForeground(new Color(255, 255, 255));
+		lblNombre.setForeground(new Color(255,255,255));
 		lblNombre.setFont(new Font("Arial", Font.BOLD, 10));
 
-//btnJugar
 		btnJugar = new JButton("Jugar");
 		add(btnJugar);
-		// btnJugar.setLocation(400,220);
-		btnJugar.setSize(200, 100);
-
+		btnJugar.setBorder(new LineBorder(new Color(0, 255, 0), 4));
 		btnJugar.addActionListener(this);
-
-		btnJugar.setForeground(new Color(255, 255, 255));
-		btnJugar.setFont(new Font("JetBrainsMono-Thin", Font.TRUETYPE_FONT, 30));
-		btnJugar.setBackground(new Color(30, 30, 30));
-
-//btnScoreBoard
+		btnJugar.setForeground(Juego.color);
+		btnJugar.setFont(new Font("JetBrainsMono-Thin", Font.TRUETYPE_FONT, 40));
+		btnJugar.setBackground(new Color(0, 0, 0));
+		
 
 		btnScoreBoard = new JButton("Leaderboards");
 		add(btnScoreBoard);
-//btnScoreBoard.setLocation(400,420);
-		btnScoreBoard.setSize(200, 100);
-
+		btnScoreBoard.setBorder(new LineBorder(new Color(0, 255, 0), 4));
 		btnScoreBoard.addActionListener(this);
-
-		btnScoreBoard.setForeground(new Color(255, 255, 255));
+		btnScoreBoard.setForeground(Juego.color);
 		btnScoreBoard.setFont(new Font("JetBrainsMono-Light", Font.TRUETYPE_FONT, 30));
-		btnScoreBoard.setBackground(new Color(30, 30, 30));
+		btnScoreBoard.setBackground(new Color(0, 0, 0));
+		
 
-//Boton Iniciar sesion
 		btnIniciarSesion = new JButton("Iniciar sesión");
 		add(btnIniciarSesion);
-//btnIniciarSesion.setLocation(1100,100);
-		btnIniciarSesion.setSize(200, 50);
-
+		btnIniciarSesion.setBorder(new LineBorder(new Color(0, 255, 0), 4));
 		btnIniciarSesion.addActionListener(this);
-
-		btnIniciarSesion.setForeground(new Color(255, 255, 255));
+		btnIniciarSesion.setForeground(Juego.color);
 		btnIniciarSesion.setFont(new Font("JetBrainsMono-Light", Font.TRUETYPE_FONT, 30));
-		btnIniciarSesion.setBackground(new Color(30, 30, 30));
+		btnIniciarSesion.setBackground(new Color(0, 0, 0));
+		
+		
 		if (sesion) {
 			btnIniciarSesion.setEnabled(false);
 		}
@@ -123,35 +97,21 @@ public class Menu extends JFrame implements ActionListener {
 			btnIniciarSesion.setEnabled(true);
 		}
 		
-//Boton Cerrar Sesion
 		btnCerrarSesion = new JButton("Cerrar Sesion");
 		add(btnCerrarSesion);
-//btnCerrarSesion.setLocation(1100,100);
-		btnCerrarSesion.setSize(200, 50);
-
+		btnCerrarSesion.setBorder(new LineBorder(new Color(0, 255, 0), 4));
 		btnCerrarSesion.addActionListener(this);
-		btnCerrarSesion.setForeground(new Color(255, 255, 255));
+		btnCerrarSesion.setForeground(Juego.color);
 		btnCerrarSesion.setFont(new Font("JetBrainsMono-Light", Font.TRUETYPE_FONT, 30));
-		btnCerrarSesion.setBackground(new Color(30, 30, 30));
+		btnCerrarSesion.setBackground(new Color(0, 0, 0));
+		
 		if (sesion) {
 			btnCerrarSesion.setEnabled(true);
 		}
 		else {
 			btnCerrarSesion.setEnabled(false);
 		}
-
-//Boton Atras
-		btnAtras = new JButton("Atras");
-		add(btnAtras);
-//btnAtras.setLocation(1100,100);
-		btnAtras.setSize(200, 50);
-
-		btnAtras.addActionListener(this);
-		btnAtras.setForeground(new Color(255, 255, 255));
-		btnAtras.setFont(new Font("JetBrainsMono-Light", Font.TRUETYPE_FONT, 30));
-		btnAtras.setBackground(new Color(30, 30, 30));
 	}
-
 	public void actionPerformed(ActionEvent e) {
 		JButton elegido = (JButton) e.getSource();
 		if (elegido == btnJugar) {

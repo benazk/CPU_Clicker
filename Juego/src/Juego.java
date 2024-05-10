@@ -1,8 +1,10 @@
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -28,6 +30,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
@@ -55,11 +58,13 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 	public static Juego juego;// Ventana del juego
 
-	public static Thread bitsObtenidos;// Hilo para los bits
+	public static Thread bitsObtenidos, hilo;// Hilo para los bits
 
 	static Info info;
+	
+	static Configuracion config;
 
-	static JButton btnSalir, btnCPU, btnInfo, btnEst, btnMejora1, btnMejora2, btnMejora3, btnMejora4, btnMejora5,
+	static JButton btnSalir, btnCPU, btnOpc, btnEst, btnMejora1, btnMejora2, btnMejora3, btnMejora4, btnMejora5,
 			btnBSoD; // Botones de mejoras
 
 	public static JLabel lblArquitectura, lblBits, lblBitsPS, lblMultiplicador, lblBitsPC; // Labels para datos varios
@@ -73,10 +78,6 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 			lblCostoM4 = new JLabel("2000 bits"), lblNombreM4 = new JLabel("Transistores"),
 			lblCantidadM4 = new JLabel("0");
-
-	public static JLabel lblBitsCant, lblInfo, lblInfoMejora1, lblInfoMejora2, lblInfoMejora3, lblInfoMejora4; // Labels
-																												// en
-																												// desuso
 
 	public static String arquitectura = "Magnus";
 
@@ -102,7 +103,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	static JButton bonuses[] = { btnPararTiempo, btnBitsGratis, btnPotenciadorBits }; // array con los botones de
 																						// bonuses
 
-	static boolean estadoBonus; // Verifica si un boton está en pantalla o no
+	static boolean estadoBonus = false; // Verifica si un boton está en pantalla o no
 
 	public static JLabel lblBSoDNombre = new JLabel("Blue Screen Of Death"), // Labels para el botón de BSoD
 			lblBSoD_Cant = new JLabel(String.valueOf(BSoD)), lblBSoD_Precio = new JLabel(String.valueOf(BSoDPrice));
@@ -128,11 +129,31 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	static Connection conn; // Variable con la conexión
 
 	public static Color color = new Color(88, 184, 4);
+
+	static boolean panelActivoEst = false;
 	
-	static boolean panelActivo = false;
+	static boolean panelActivoOpc = false;
+
+	Font font;
 	
 	Juego() throws NumberFormatException, IOException {
 
+		
+		try {
+            InputStream file = Canvas.class.getResourceAsStream("RammettoOne-Regular.ttf");
+            font = Font.createFont(Font.TRUETYPE_FONT, file);
+
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(font);
+
+            font = font.deriveFont(Font.PLAIN, 14);
+
+        } catch (IOException | FontFormatException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+		
+		
 		// Personalización
 		Container frame = getContentPane();
 
@@ -148,8 +169,8 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 		getRootPane().setWindowDecorationStyle(JRootPane.NONE);
 
-		frame.setBackground(new Color(50,50,50));
-		
+		frame.setBackground(new Color(0, 0, 0));
+
 		btnSalir = new JButton("Volver al Menú");
 		btnSalir.setLocation(0, 0);
 		btnSalir.setSize(150, 50);
@@ -182,15 +203,15 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		case 7:
 		}
 
-		LinkedList<Object> a=new LinkedList<Object>();
+		LinkedList<Object> a = new LinkedList<Object>();
 		a.add(0.3);
 		a.add(0.3);
-		a.add(new ColorUIResource(0,0,0));
+		a.add(new ColorUIResource(0, 0, 0));
 		a.add(new ColorUIResource(60, 60, 60));
 		a.add(new ColorUIResource(100, 100, 100));
-		
-		UIManager.put("Button.gradient",a);
-		
+
+		UIManager.put("Button.gradient", a);
+
 		lblBits = new JLabel("0 bits");
 		lblBits.setLocation(175, 330);
 		lblBits.setSize(200, 20);
@@ -202,7 +223,6 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		lblBitsPS.setSize(150, 20);
 		lblBitsPS.setForeground(color);
 		frame.add(lblBitsPS);
-		
 
 		lblBitsPC = new JLabel(bitsPC + " bits");
 		lblBitsPC.setLocation(Functions.posicionRandomEnRango(70, 340), Functions.posicionRandomEnRango(70, 340));
@@ -217,19 +237,19 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		frame.add(frases);
 		frases.addMouseListener(this);
 
-		btnInfo = new JButton("Opciones");
-		btnInfo.setLocation(400, 600);
-		btnInfo.setSize(200, 60);
-		btnInfo.setForeground(color);
-		btnInfo.setBorder(new LineBorder(new Color(0,255,0)));
-		frame.add(btnInfo);
-		btnInfo.addActionListener(this);
+		btnOpc = new JButton("Opciones");
+		btnOpc.setLocation(400, 600);
+		btnOpc.setSize(200, 60);
+		btnOpc.setForeground(color);
+		btnOpc.setBorder(new LineBorder(new Color(0, 255, 0), 2));
+		frame.add(btnOpc);
+		btnOpc.addActionListener(this);
 
 		btnEst = new JButton("Estadísticas	");
 		btnEst.setLocation(600, 600);
 		btnEst.setSize(200, 60);
 		btnEst.setForeground(color);
-		btnEst.setBorder(new LineBorder(new Color(0,255,0)));
+		btnEst.setBorder(new LineBorder(new Color(0, 255, 0), 2));
 		frame.add(btnEst);
 		btnEst.addActionListener(this);
 
@@ -243,7 +263,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		lblBSoDNombre.setForeground(color);
 		lblBSoD_Cant.setForeground(color);
 		lblBSoD_Precio.setForeground(color);
-		btnBSoD.setBorder(new LineBorder(new Color(0,255,0)));
+		btnBSoD.setBorder(new LineBorder(new Color(0, 255, 0), 2));
 		frame.add(btnBSoD);
 		btnBSoD.addActionListener(this);
 
@@ -258,7 +278,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		lblCantidadM1.setForeground(color);
 		lblNombreM1.setForeground(color);
 		lblCostoM1.setForeground(color);
-		btnMejora1.setBorder(new LineBorder(new Color(0,255,0)));
+		btnMejora1.setBorder(new LineBorder(new Color(0, 255, 0), 2));
 		frame.add(btnMejora1);
 		btnMejora1.addActionListener(this);
 
@@ -273,7 +293,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		lblCantidadM2.setForeground(color);
 		lblNombreM2.setForeground(color);
 		lblCostoM2.setForeground(color);
-		btnMejora2.setBorder(new LineBorder(new Color(0,255,0)));
+		btnMejora2.setBorder(new LineBorder(new Color(0, 255, 0), 2));
 		frame.add(btnMejora2);
 		btnMejora2.addActionListener(this);
 
@@ -288,7 +308,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		lblCantidadM3.setForeground(color);
 		lblNombreM3.setForeground(color);
 		lblCostoM3.setForeground(color);
-		btnMejora3.setBorder(new LineBorder(new Color(0,255,0)));
+		btnMejora3.setBorder(new LineBorder(new Color(0, 255, 0), 2));
 		frame.add(btnMejora3);
 		btnMejora3.addActionListener(this);
 
@@ -303,11 +323,12 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		lblCantidadM4.setForeground(color);
 		lblNombreM4.setForeground(color);
 		lblCostoM4.setForeground(color);
-		btnMejora4.setBorder(new LineBorder(new Color(0,255,0)));
+		btnMejora4.setBorder(new LineBorder(new Color(0, 255, 0), 2));
 		frame.add(btnMejora4);
 		btnMejora4.addActionListener(this);
 
 		frame.add(bonuses[0]);
+		bonuses[0].setBackground(new Color(255, 41, 25));
 		bonuses[0].setVisible(false);
 		bonuses[0].addActionListener(this);
 		bonuses[0].addMouseListener(this);
@@ -327,21 +348,33 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 		lblWafer.setVisible(false);
 
 		frame.add(bonuses[1]);
+		bonuses[1].setBackground(new Color(255, 41, 25));
 		bonuses[1].setVisible(false);
+		
 		bonuses[2].addActionListener(this);
 		frame.add(bonuses[2]);
+		bonuses[2].setBackground(new Color(255, 41, 25));
 		bonuses[2].setVisible(false);
 		lblBuffer = new JLabel();
+		lblBuffer.setForeground(color);
 		lblBuffer.setLocation(lblTimeStop.getLocation());
 		lblBuffer.setSize(lblTimeStop.getSize());
 		frame.add(lblBuffer);
 
 		info = new Info();
 		Info.panel.setSize(400, 450);
-		Info.panel.setLocation(400, 200);
+		Info.panel.setLocation(400, 150);
 		frame.add(Info.panel);
 		Info.panel.setVisible(false);
-
+		hilo = new Thread(info);
+		hilo.start();
+		
+		config = new Configuracion();
+		Configuracion.panel.setSize(400, 450);
+		Configuracion.panel.setLocation(400, 150);
+		frame.add(Configuracion.panel);
+		Configuracion.panel.setVisible(false);
+		
 		ImageIcon icon = new ImageIcon("BSoD.png");
 		BSoDImg = new JLabel();
 		BSoDImg.setIcon(icon);
@@ -359,12 +392,13 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 	public void actionPerformed(ActionEvent e) {
 
-		System.out.println("clicks efectuados: " + clicks);
-		System.out.println("bits por click: " + bitsPC);
-		System.out.println("bits actuales: " + bits);
-		System.out.println("BSoDs: " + BSoD);
-		System.out.println("Usuario: " + Menu.usuario);
-		System.out.println("Sesion: " + Menu.sesion);
+		/*
+		 * System.out.println("clicks efectuados: " + clicks);
+		 * System.out.println("bits por click: " + bitsPC);
+		 * System.out.println("bits actuales: " + bits); System.out.println("BSoDs: " +
+		 * BSoD); System.out.println("Usuario: " + Menu.usuario);
+		 * System.out.println("Sesion: " + Menu.sesion);
+		 */
 
 		bits = Integer.parseInt(lblBits.getText().substring(0, lblBits.getText().length() - 5));
 		JButton accion = (JButton) e.getSource();
@@ -396,7 +430,8 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				lblCantidadM1.setText(String.valueOf(mejora1)); // Poner la cantidad de mejoras en el frame
 				bitsPC = Functions.mejora1(mejora1) + 1; // Sumar bits por click teniendo en cuenta la mejora
 				lblCostoM1.setText(String.valueOf(Functions.mejora1Price(mejora1)) + " bits"); // Poner el costo de la
-																								// mejora
+				Functions.actualizarDatos();
+				Functions.guardarDatosLocal(); // mejora
 			}
 
 		}
@@ -410,8 +445,10 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				bitsPS = Integer.parseInt(lblBitsPS.getText().substring(0, lblBitsPS.getText().length() - 9))
 						+ Functions.mejora2(mejora2);
 				lblBitsPS.setText(bitsPS + " bits P/S");
-				lblCostoM2.setText(String.valueOf(Functions.mejora2Price(mejora2)) + " bits");				
+				lblCostoM2.setText(String.valueOf(Functions.mejora2Price(mejora2)) + " bits");
 				bitsPSoriginal = bitsPS;
+				Functions.actualizarDatos();
+				Functions.guardarDatosLocal();
 			}
 		}
 
@@ -427,6 +464,8 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				lblBitsPS.setText(bitsPS + " bits P/S");
 				lblCostoM3.setText(String.valueOf(Functions.mejora3Price(mejora3)) + " bits");
 				bitsPSoriginal = bitsPS;
+				Functions.actualizarDatos();
+				Functions.guardarDatosLocal();
 			}
 		}
 		if (accion == btnMejora4) {
@@ -441,27 +480,44 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				lblBitsPS.setText(bitsPS + " bits P/S");
 				lblCostoM4.setText(String.valueOf(Functions.mejora4Price(mejora4)) + " bits");
 				bitsPSoriginal = bitsPS;
+				Functions.actualizarDatos();
+				Functions.guardarDatosLocal();
 			}
 		}
 		if (accion == btnEst) {
-			if(panelActivo==false) {
-			Info.panel.setVisible(true);
-			panelActivo=true;
-			}
-			
-			else if(panelActivo) {
-			Info.panel.setVisible(false);
-			panelActivo=false;
+			if(!panelActivoOpc) {
+				
+				if (!panelActivoEst) {
+					Info.panel.setVisible(true);
+					panelActivoEst = true;
+				}
+
+				else if (panelActivoEst) {
+					Info.panel.setVisible(false);
+					panelActivoEst = false;
+				}
 			}
 		}
-		
-		
-		
+
+		if (accion == btnOpc) {
+			if(!panelActivoEst) {
+				if (!panelActivoOpc) {
+					Configuracion.panel.setVisible(true);
+					panelActivoOpc = true;
+				}
+				else if(panelActivoOpc) {
+					Configuracion.panel.setVisible(false);
+					panelActivoOpc = false;
+				}
+			}
+		}
+
 		if (accion == btnBSoD) {
 			// Codigo para reiniciar en el caso de un BSoD (Pone todos los datos excepto el
 			// BSoD a 0)
 			if (bits > Integer.parseInt(lblBSoD_Precio.getText())) {
-
+				Functions.actualizarDatos();
+				Functions.guardarDatosLocal();
 				BSoD++;
 
 				bits = 0;
@@ -574,6 +630,8 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				bitsPS = bitsPSoriginal;
 				lblBitsPS.setText(bitsPS + " bits P/S");
 			}
+
+			Functions.actualizarDatos();
 			Functions.guardarDatosLocal();
 			if (Menu.sesion) {
 				Functions.guardado();
@@ -592,38 +650,39 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			Functions.pasarTiempo();
 
 			int bonus = (int) Math.floor(Math.random() * 60);
-			estadoBonus = false;
-			switch (bonus) { // Condiciones para los bonuses
-			case 189:
+			
+			 // Condiciones para los bonuses
+			if(bonus == 2) {
 				if (!estadoBonus) {
+					estadoBonus = true;
 					bonuses[0].setSize(Functions.posicionRandomEnRango(50, 80),
 							Functions.posicionRandomEnRango(50, 80));
 					bonuses[0].setLocation(Functions.posicionRandomEnRango(10, 400),
 							Functions.posicionRandomEnRango(20, 740));
 					bonuses[0].setVisible(true);
-					estadoBonus = true;
 				}
-			case 212:
+			}
+			else if(bonus == 2) {
 				if (!estadoBonus) {
+					estadoBonus = true;
 					bonuses[1].setSize(Functions.posicionRandomEnRango(50, 80),
 							Functions.posicionRandomEnRango(50, 80));
 					bonuses[1].setLocation(Functions.posicionRandomEnRango(10, 400),
 							Functions.posicionRandomEnRango(20, 740));
 					bonuses[1].setVisible(true);
-					estadoBonus = true;
-
 				}
-			case 2:
+				}
+			else if(bonus == 3) {
 				if (!estadoBonus) {
+					estadoBonus = true;
 					bonuses[2].setSize(Functions.posicionRandomEnRango(50, 100),
 							Functions.posicionRandomEnRango(50, 100));
 					bonuses[2].setLocation(Functions.posicionRandomEnRango(10, 400),
 							Functions.posicionRandomEnRango(20, 740));
-					bonuses[2].setVisible(true);
-					estadoBonus = true;
-
+					bonuses[2].setVisible(true);				
 				}
 			}
+			
 
 			while (contadorTimestop > 0) {
 				try {
@@ -635,7 +694,6 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
 				}
-				System.out.println(contadorTimestop);
 				if (contadorTimestop <= 0) {
 					lblTimeStop.setVisible(false);
 					timestopMultiplier = 0;
@@ -653,7 +711,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				try {
 					Thread.sleep(100);
 					tiempo += 0.1;
-					
+
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -667,7 +725,7 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				lblBuffer.setText(String.valueOf((int) contadorBuffer) + "s");
 				contadorBuffer -= 0.1;
 				if (contadorBuffer <= 0.1) {
-					bitsPS = bitsPSoriginal; 	
+					bitsPS = bitsPSoriginal;
 					lblBitsPS.setText(bitsPS + " bits P/S");
 				}
 			}
@@ -682,7 +740,6 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 	public static void main(String[] args) throws NumberFormatException, IOException {
 
 		juego = new Juego();
-		Functions.cargarDatosLocal();
 		bitsObtenidos = new Thread(juego);
 		ActionListener guardado = new ActionListener() { // Action listener para el guardado del juego automático
 			public void actionPerformed(ActionEvent evt) {
@@ -697,12 +754,11 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				}
 			}
 		};
-		timer = new Timer(60000, guardado); // Temporizador para ejecutar ese guardado cada 60 segundos
+		timer = new Timer(10000, guardado); // Temporizador para ejecutar ese guardado cada 60 segundos
 		timer.setRepeats(true);
 		timer.start();
-		String filePath = "timestop.wav";
-		// Functions.playMusicLoop(filePath);
-		// Cargar datos de usuario si el usuario está iniciado sesión
+		String filePath = "game1.wav";
+		Functions.playMusicLoop(filePath);
 
 		juego.setVisible(true);
 
@@ -730,11 +786,9 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 				int x = 0;
 
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("Chorizo");
 					frases.setForeground(new Color(88, 184, 4, x++));
 					if (x == 255) {
 						timer.stop();
-						System.out.println("Chorizo");
 					}
 				}
 
@@ -747,8 +801,10 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 			clicks++;
 		}
 
-		if (e.getSource() == lblArquitectura) {
-
+		if (e.getSource() == lblArquitectura && e.getClickCount() == 2) {
+			String nombreArquitectura = JOptionPane.showInputDialog("Elige el nombre para la arquitectura");
+			lblArquitectura.setText(nombreArquitectura);
+			Functions.guardarDatosLocal();
 		}
 
 	}
@@ -773,6 +829,9 @@ public class Juego extends JFrame implements ActionListener, Runnable, MouseList
 
 	@Override
 	public void windowClosing(WindowEvent e) {
+		if (contadorBuffer > 0) {
+			bitsPS = bitsPSoriginal;
+		}
 
 	}
 

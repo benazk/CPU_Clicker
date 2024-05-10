@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -9,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.EventListener;
+import java.util.LinkedList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,6 +19,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
+import javax.swing.plaf.ColorUIResource;
 
 @SuppressWarnings("serial")
 public class InicioSesion extends JFrame implements  EventListener, ActionListener, Runnable {
@@ -30,55 +35,67 @@ public class InicioSesion extends JFrame implements  EventListener, ActionListen
 	
 	InicioSesion(){
 		
+		Container frame = getContentPane();
+		
+		LinkedList<Object> a=new LinkedList<Object>();
+		a.add(0.3);
+		a.add(0.3);
+		a.add(new ColorUIResource(0,0,0));
+		a.add(new ColorUIResource(60, 60, 60));
+		a.add(new ColorUIResource(100, 100, 100));
+		
+		UIManager.put("Button.gradient",a);
+		
 		setTitle("Inicio de sesión");
 
-	    setSize(500, 400);
+		setSize(300, 400);
 
 	    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	    
-	    setLayout(null);
+	    setLayout(new GridLayout(6,1));
 	    
 	    setUndecorated(true);
 	    
 		getRootPane().setWindowDecorationStyle(JRootPane.NONE);
-	    
-		Container frame = getContentPane();
 
-		frame.setBackground(new Color(50, 50, 50));
+		frame.setBackground(new Color(0, 0, 0));
 		
 	    lblTitulo = new JLabel("Inicio de Sesión");
-	    lblTitulo.setLocation(150,40);
-	    lblTitulo.setSize(200,40);	   
-	    lblTitulo.setFont(new Font("Arial", Font.PLAIN, 25));
+	    lblTitulo.setFont(new Font("Arial", Font.PLAIN, 42));
+	    lblTitulo.setForeground(new Color(0, 255, 0));
 	    add(lblTitulo);
 	    
 	    lblUsuario = new JLabel("Nombre de usuario:");
-	    lblUsuario.setLocation(80, 80);
-	    lblUsuario.setSize(170,40);	    
+	    lblUsuario.setFont(new Font("Arial", Font.PLAIN, 25));
+	    lblUsuario.setForeground(new Color(0, 255, 0));
 	    add(lblUsuario);
 	    
 	    txtUsuario = new JTextField();
-	    txtUsuario.setLocation(80,120);
-	    txtUsuario.setSize(340,40);
+	    txtUsuario.setFont(new Font("ayuthaya", Font.PLAIN, 30));
+	    txtUsuario.setBackground(new Color(0,0,0));
+	    txtUsuario.setForeground(new Color(255, 236, 173));
+	    txtUsuario.setBorder(null);
 	    add(txtUsuario);
 	    txtUsuario.addActionListener(this);
 	    
 	    lblContraseña = new JLabel("Contraseña:");
-	    lblContraseña.setLocation(80, 180);
-	    lblContraseña.setSize(170,40);
+	    lblContraseña.setFont(new Font("Arial", Font.PLAIN, 25));
+	    lblContraseña.setForeground(new Color(0, 255, 0));
 	    add(lblContraseña);
 	    
 	    pswContraseña = new JPasswordField();
-	    pswContraseña.setLocation(80,220);
-	    pswContraseña.setSize(340,40);
+	    pswContraseña.setFont(new Font("ayuthaya", Font.PLAIN, 30));
+	    pswContraseña.setBackground(new Color(0,0,0));
+	    pswContraseña.setForeground(new Color(255, 236, 173));
+	    pswContraseña.setBorder(null);
 	    add(pswContraseña);
 	    pswContraseña.addActionListener(this);
 	    
 	    btnConfirmar = new JButton("Iniciar Sesión");
-	    btnConfirmar.setLocation(190,280);
-	    btnConfirmar.setSize(120,40);
 	    add(btnConfirmar);
 	    btnConfirmar.addActionListener(this);
+	    btnConfirmar.setForeground(Juego.color);
+	    btnConfirmar.setBorder(new LineBorder(new Color(0,255,0)));
 	}
 	
 	@Override
@@ -100,8 +117,6 @@ public class InicioSesion extends JFrame implements  EventListener, ActionListen
 
 			Statement stmt = conn.createStatement();
 			if (seleccion == btnConfirmar) {
-				System.out.println(Encryptpasswd);
-				System.out.println(EncryptpasswdBBDD);
 				ResultSet rs = stmt.executeQuery("SELECT nombreUsuario, contraseña FROM usuario WHERE nombreUsuario = '" + txtUsuario.getText() + "'");
 				if(rs.next()) {
 					EncryptpasswdBBDD = rs.getString("contraseña");

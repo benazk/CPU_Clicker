@@ -4,6 +4,10 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -19,8 +23,9 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.Timer;
 
-public class Info extends JFrame implements ActionListener {
+public class Info extends JFrame implements ActionListener, Runnable {
 	public static JLabel lblTitulo, lblActuales, lblMaximos, lblPS, lblPS_Raw, lblSumMejoras, lblBitsPC, lblMins, lblArquitectura, lblVersion;
 	
 	public static JLabel lblMargin;
@@ -35,12 +40,16 @@ public class Info extends JFrame implements ActionListener {
 	
 	Connection conn;
 	
+	public static Thread hilo;
+	
 	JScrollPane scroll = new JScrollPane(panel);
 	
-	Info(){
+	Info() throws IOException{
 		
 		try {
+			
 			Functions.cargarDatosLocal();
+			
 			scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			
 	        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -95,12 +104,12 @@ public class Info extends JFrame implements ActionListener {
 		    lblBitsPC.setForeground(Juego.color);
 		    
 		    if(Juego.tiempo < 3600) {
-		    	lblMins = new JLabel(" Tiempo Jugado: " + Juego.tiempo + " mins");
+		    	lblMins = new JLabel(" Tiempo Jugado: " + df.format(Juego.tiempo) + " mins");
 			    panel.add(lblMins);
 			    lblMins.setForeground(Juego.color);
 		    }
 		    else {
-		    	lblMins = new JLabel(" Tiempo Jugado: " + (df.format(Juego.tiempo / 60)) + "h");
+		    	lblMins = new JLabel(" Tiempo Jugado: " + (df.format(Juego.tiempo / 3600)) + "h");
 			    panel.add(lblMins);
 			    lblMins.setForeground(Juego.color);
 		    }
@@ -142,10 +151,9 @@ public class Info extends JFrame implements ActionListener {
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+		
+			
 		
 	    }
 
@@ -157,8 +165,72 @@ public class Info extends JFrame implements ActionListener {
 
 	}
 
-	public static void main(String[] args) {
-		System.out.println(Juego.tiempo);
+	public static void main(String[] args) throws IOException {
+		Info info = new Info();
+		hilo = new Thread(info);
 	}
 
+
+
+	@Override
+	public void run() {
+		while(Juego.abierto)
+		try{
+			Thread.sleep(20000);
+		if (!Menu.sesion) {
+			Functions.actualizarDatos();
+			try {
+				File file = new File("datos.txt");
+				BufferedReader reader;
+				try {
+					reader = new BufferedReader(new FileReader(file));
+					Juego.bits = Long.parseLong(reader.readLine());
+					Juego.bitsMax = Long.parseLong(reader.readLine());
+					Juego.bitsPS = Integer.parseInt(reader.readLine());
+					Juego.bitsPC = Integer.parseInt(reader.readLine());
+					Juego.clicks = Integer.parseInt(reader.readLine());
+					Juego.BSoD = Integer.parseInt(reader.readLine());
+					Juego.mejora1 = Integer.parseInt(reader.readLine());
+					Juego.mejora2 = Integer.parseInt(reader.readLine());
+					Juego.mejora3 = Integer.parseInt(reader.readLine());
+					Juego.mejora4 = Integer.parseInt(reader.readLine());
+					Juego.tiempo = Double.parseDouble(reader.readLine());
+					Juego.arquitectura = reader.readLine();
+					reader.close();
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				lblActuales.setText("Bits Actuales: " + Juego.bits + " bits");
+				lblMaximos.setText(" Bits Máximos: " + Juego.bitsMax + " bits");
+				lblPS.setText(Juego.bitsPS + " bits P/S");
+				lblPS_Raw.setText(Juego.bitsPS + " bits P/S");
+				lblBitsPC.setText(" Bits Por Click: " + Juego.bitsPC + " bits");
+				lblSumMejoras.setText(" Mejoras Totales: " + (Juego.mejora1 + Juego.mejora2 + Juego.mejora3 + Juego.mejora4));
+				if(Juego.tiempo < 3600) {
+			    	lblMins.setText(" Tiempo Jugado: " + df.format(Juego.tiempo) + " mins");
+				    panel.add(lblMins);
+				    lblMins.setForeground(Juego.color);
+			    }
+			    else {
+			    	lblMins.setText(" Tiempo Jugado: " + (df.format(Juego.tiempo / 3600)) + "h");
+				    panel.add(lblMins);
+				    lblMins.setForeground(Juego.color);
+			    }
+				lblArquitectura.setText(" Nombre de la arquitectura: " + Juego.arquitectura);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if (Menu.sesion) {
+			Functions.cargado();
+		}
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+		
 }

@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { // Solo ejecutar este código si el 
     $servidor = "localhost";
     $usuario = "root";
     $password = "";
-    $basedatos = "CPUClicker";
+    $basedatos = "cpuclicker";
 
     // Crear conexión usando las credenciales
     $conn = new mysqli($servidor, $usuario, $password, $basedatos);
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { // Solo ejecutar este código si el 
     }
     // Variables en las que guardo consultas a la base de datos ("$sql_usuarios")
 
-    $sql_usuarioRepetido = "SELECT * FROM Usuario WHERE nombreUsuario = '$nombre_usuario'";
+    $sql_usuarioRepetido = "SELECT nombreUsuario FROM usuario WHERE nombreUsuario = '$nombre_usuario'";
     $resultUser = $conn->query($sql_usuarioRepetido);
     $row = $resultUser->fetch_assoc();
     if($row != null){
@@ -47,20 +47,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { // Solo ejecutar este código si el 
         return;
     }
 
-    $sql_usuarios = "INSERT INTO Usuario (nombreUsuario, correoElectronico, contraseña, fechaNacimiento, nombre, apellido)
+    $sql_usuarios = "INSERT INTO usuario (nombreUsuario, correoElectronico, contraseña, fechaNacimiento, nombre, apellido)
 VALUES ('$nombre_usuario', '$email', '$encrypt', '$fecha_format', '$nombre', '$apellidos');";
     // Función para ejecutar la consulta 
     $conn->query($sql_usuarios);
 
-    $sql_id = "SELECT idUsuario FROM Usuario WHERE nombreUsuario = '$nombre_usuario'";
+    $sql_id = "SELECT idUsuario FROM usuario WHERE nombreUsuario = '$nombre_usuario'";
     $resultId = $conn->query($sql_id);
     $row = $resultId->fetch_assoc();
     $id = $row["idUsuario"];
 
-    $sql_estadisticas = "INSERT INTO Estadisticas (idUsuario, bitsActuales, bitsMaximos, bitsPS, minutosJugados, clicksHechos, nombreArquitectura, BSoD) VALUES ($id, 0,0,0,0,0,'Magnus',0)";
+    $sql_estadisticas = "INSERT INTO estadisticas (idUsuario, bitsActuales, bitsMaximos, bitsPS, minutosJugados, clicksHechos, nombreArquitectura, BSoD, Victorias) VALUES ($id, 0,0,0,0,0,'Magnus',0,0)";
     $conn->query($sql_estadisticas);
 
-    $sql_mejoras = "INSERT INTO Mejoras (idUsuario, cantidadTicks, cantidadCache, cantidadFPS, cantidadTransistores, sumaMejoras) VALUES ($id,0,0,0,0,0)";
+    $sql_mejoras = "INSERT INTO mejoras (idUsuario, cantidadTicks, cantidadCache, cantidadFPS, cantidadTransistores, sumaMejoras) VALUES ($id,0,0,0,0,0)";
     $conn->query($sql_mejoras);
 
     echo "<h1 style= 'font-family:hack; text-align:center; color:rgb(255, 239, 187);'>Gracias por rellenar el formulario. Tu cuenta ha sido creada</h1>";
