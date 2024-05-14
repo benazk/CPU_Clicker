@@ -24,10 +24,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { // Solo ejecutar este código si el 
     $nombre_usuario = $_POST["user"];
 
     // Variables con las credenciales del servidor/base de datos
-    $servidor = "localhost";
-    $usuario = "root";
-    $password = "";
-    $basedatos = "cpuclicker";
+    $servidor = "hl1235.dinaserver.com";
+    $usuario = "ibangames";
+    $password = "aW=112jWdKlHD013a.O";
+    $basedatos = "CPUClicker";
 
     // Crear conexión usando las credenciales
     $conn = new mysqli($servidor, $usuario, $password, $basedatos);
@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { // Solo ejecutar este código si el 
         return;
     }
 
-    $sql_usuarios = "INSERT INTO usuario (nombreUsuario, correoElectronico, contraseña, fechaNacimiento, nombre, apellido)
+    $sql_usuarios = "INSERT INTO usuario (nombreUsuario, correoElectronico, contrasena, fechaNacimiento, nombre, apellido)
 VALUES ('$nombre_usuario', '$email', '$encrypt', '$fecha_format', '$nombre', '$apellidos');";
     // Función para ejecutar la consulta 
     $conn->query($sql_usuarios);

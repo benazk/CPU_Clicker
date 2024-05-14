@@ -4,18 +4,27 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.border.LineBorder;
 
+
 public class Configuracion extends JFrame implements ActionListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	JScrollPane scroll = new JScrollPane(panel);
 
@@ -72,9 +81,9 @@ public class Configuracion extends JFrame implements ActionListener {
 		
 		btnBorrarGuardado = new JButton("<html>Borrar el archivo<br>de guardado</html>");
 		panel.add(btnBorrarGuardado);
-		btnBorrarGuardado.setBorder(new LineBorder(new Color(0, 255, 0), 4));
+		btnBorrarGuardado.setBorder(new LineBorder(new Color(255, 41, 25), 4));
 		btnBorrarGuardado.addActionListener(this);
-		btnBorrarGuardado.setForeground(Juego.color);
+		btnBorrarGuardado.setForeground(new Color(255, 41, 25));
 		btnBorrarGuardado.setFont(new Font("JetBrainsMono-Thin", Font.TRUETYPE_FONT, 35));
 		btnBorrarGuardado.setBackground(new Color(0, 0, 0));
 
@@ -99,6 +108,42 @@ public class Configuracion extends JFrame implements ActionListener {
                 }
 			}
 		}
+		if(e.getSource() == btnCerrar) {
+			JOptionPane.showConfirmDialog(btnCerrar, e);
+			Runtime.getRuntime().exit(1);
+		}
+		
+		if(e.getSource() == btnBorrarGuardado) {
+			Functions.actualizarDatos();
+			File file = new File("datos.txt");
+			FileWriter fw;
+			try {
+				fw = new FileWriter(file);
+				try {
+					fw.write("0\n");
+					fw.write("0\n");
+					fw.write("0\n");
+					fw.write("1\n");
+					fw.write("0\n");
+					fw.write("0\n");
+					fw.write("0\n");
+					fw.write("0\n");
+					fw.write("0\n");
+					fw.write("0\n");
+					fw.write("0.0000\n");
+					fw.write("Magnus");
+
+				} catch (Exception f) {
+					f.printStackTrace();
+				} finally {
+					fw.flush();
+					fw.close();
+				}
+			} catch (IOException g) {
+				g.printStackTrace();
+			}
+		}
+		
 
 	}
 

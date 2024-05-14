@@ -1,27 +1,19 @@
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.border.LineBorder;
-import javax.swing.plaf.ColorUIResource;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.io.*;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 
-public class Menu extends JFrame implements ActionListener {
 
+public class Menu extends JPanel implements ActionListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static JButton btnJugar, btnScoreBoard, btnIniciarSesion, btnCerrarSesion;
 	JLabel lblNombre;
 
@@ -29,8 +21,13 @@ public class Menu extends JFrame implements ActionListener {
 
 	public static boolean sesion = false;
 
-
-	Menu() {
+	static Menu play;
+	
+	private Aplicacion aplicacion;
+	
+	Menu(Aplicacion aplicacion) {
+		
+		this.aplicacion = aplicacion;
 		File file = new File("sesion.txt");
 		BufferedReader reader;
 	    try {
@@ -39,20 +36,17 @@ public class Menu extends JFrame implements ActionListener {
 	    	sesion = Boolean.parseBoolean(reader.readLine());
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		setLayout(null);
-		setTitle("Menú");
+	    
+	    
 		setLayout(new GridLayout(5, 1));
 
 		setVisible(true);
 		setSize(1366, 768);
 
-		Container frame = getContentPane();
-
-		frame.setBackground(new Color(0, 0, 0));
+		setBackground(new Color(0, 0, 0));
 
 		// Nombre Juego
 		lblNombre = new JLabel(
@@ -97,7 +91,7 @@ public class Menu extends JFrame implements ActionListener {
 			btnIniciarSesion.setEnabled(true);
 		}
 		
-		btnCerrarSesion = new JButton("Cerrar Sesion");
+		btnCerrarSesion = new JButton("Cerrar Sesión");
 		add(btnCerrarSesion);
 		btnCerrarSesion.setBorder(new LineBorder(new Color(0, 255, 0), 4));
 		btnCerrarSesion.addActionListener(this);
@@ -111,29 +105,18 @@ public class Menu extends JFrame implements ActionListener {
 		else {
 			btnCerrarSesion.setEnabled(false);
 		}
+		if(sesion) {
+			btnCerrarSesion.setEnabled(true);
+		}
+		setVisible(true);
 	}
 	public void actionPerformed(ActionEvent e) {
 		JButton elegido = (JButton) e.getSource();
 		if (elegido == btnJugar) {
-			Juego juego;
-			try {
-				juego = new Juego();
-				juego.setVisible(true);
+				aplicacion.mostrarJuego();
 				Juego.abierto = true;
-				Thread contador = new Thread(juego);
-				contador.start();
-				
-			} catch (NumberFormatException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-			
 		}
-		else if(elegido == btnCerrarSesion) {
+		if(elegido == btnCerrarSesion) {
 			sesion = false;
 			usuario = null;
 			Functions.mantenerSesiónLocal();
@@ -141,27 +124,17 @@ public class Menu extends JFrame implements ActionListener {
 			btnCerrarSesion.setEnabled(false);
 		}
 		if (elegido == btnIniciarSesion) {
-			InicioSesion sesion = new InicioSesion();
-			sesion.setVisible(true);
+			aplicacion.mostrarSesion();
 		}
 		
 		if (elegido == btnScoreBoard) {
-			Leaderboards Leaderboards = new Leaderboards();
-			Leaderboards.setVisible(true);
+			aplicacion.mostrarLeaderboards();
 		}
 		
 
 	}
 
-	public static void main(String[] args) {
-		Menu play = new Menu();
-		System.out.println(sesion + usuario);
-		if(sesion) {
-			btnCerrarSesion.setEnabled(true);
-		}
-		
-	    
 
-	}
+	
 
 }

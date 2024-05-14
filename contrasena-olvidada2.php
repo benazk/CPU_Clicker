@@ -1,6 +1,12 @@
 <?php
 include "php/codigo.php";
-echo $codigo;
+session_start();
+if (isset($_SESSION['email'])) {
+    $email = $_SESSION['email'];
+} else {
+    header("Location: contrasena-olvidada1.php");
+    exit;
+}
 ?>
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -49,8 +55,8 @@ echo $codigo;
                         <form name="formRecuperarContraseña" action="php/confirmacion.php" method="post" class="form">
                             <label for="codigoRecuperar">Escribe el código que hemos enviado a tu correo: </label><br>
                             <input type="text" name="codigoRecuperar" id="codigoRecuperar">
+                            <input type="hidden" name="email" value="<?php echo isset($email) ? $email : ''; ?>">
                             <input type="submit" name="boton" id="button" class="button">
-
                         </form>
                     </div>
                 </div>

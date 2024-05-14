@@ -46,7 +46,7 @@ include "php/estado-sesion.php";
                         <p class="padding"><?php echo $user ?>@<?php echo $user ?>:$ ~ cat Datos_de_usuario.txt</p>
                         <h1 class="padding"><?php echo "$bits" ?> Bits</h1>
                         <h2 class="padding">Tiempo Jugado: <?php echo $tiempoJugado ?> mins </h2>
-                        <h2 class="padding">Bits maximos: <?php echo $bitsMaximos ?> Bits</h2>
+                        <h2 class="padding">Bits máximos: <?php echo $bitsMaximos ?> Bits</h2>
                         <h2 class="padding">Mejoras Totales: <?php echo $mejorasTotales ?></h2>
                         <h2 class="padding">Bits por segundo: <?php echo $bitsPs ?></h2>
                         <h2 class="padding">Clicks Hechos: <?php echo $clicsHechos ?></h2>
@@ -57,7 +57,7 @@ include "php/estado-sesion.php";
                 </div> <!-- end of content -->
                 <div class="right">
 
-                    <div class="header_01">Botones</div>
+                    <div class="header_01">Menú</div>
                     <div class="margin_bottom_20"></div>
 
 

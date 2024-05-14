@@ -55,7 +55,11 @@ include("iniciar.php");
           <div class="group">
             <input type="submit" class="button" value="Iniciar Sesión">
           </div>
+          
         </form>
+        <div class="olvidada">
+            <a href="contrasena-olvidada1.php">Contraseña olvidada</a>
+          </div>
         </div>
         
         <div class="sign-up-htm">
@@ -93,9 +97,7 @@ include("iniciar.php");
           <div class="group">
             <input type="submit" class="button" value="Crear Cuenta" onclick="return !!(comprobarContrasennasIguales() & comprobarCamposCompletos());">
           </div>
-          <div class="olvidada">
-            <a href="contrasena-olvidada1.php">Contraseña olvidada</a>
-          </div>
+          
           
         </form>
           </div>

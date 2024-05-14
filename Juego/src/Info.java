@@ -1,9 +1,5 @@
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,18 +11,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
-
-import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.Timer;
 
-public class Info extends JFrame implements ActionListener, Runnable {
-	public static JLabel lblTitulo, lblActuales, lblMaximos, lblPS, lblPS_Raw, lblSumMejoras, lblBitsPC, lblMins, lblArquitectura, lblVersion;
+
+public class Info extends JFrame implements Runnable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public static JLabel lblTitulo, lblActuales, lblMaximos, lblPS, lblSumMejoras, lblBitsPC, lblClicks, lblMins, lblArquitectura, lblVersion;
 	
 	public static JLabel lblMargin;
 	
@@ -68,7 +66,7 @@ public class Info extends JFrame implements ActionListener, Runnable {
 
 			setLayout(null);
 		    
-		    panel.setLayout(new GridLayout(10,1));
+		    panel.setLayout(new GridLayout(11,1));
 		    
 		    add(panel);
 		    
@@ -91,17 +89,17 @@ public class Info extends JFrame implements ActionListener, Runnable {
 		    panel.add(lblPS);
 		    lblPS.setForeground(Juego.color);
 		    
-		    lblPS_Raw = new JLabel(" Bits Por Segundo: " + Juego.bitsPS + " bits");
-		    panel.add(lblPS_Raw);
-		    lblPS_Raw.setForeground(Juego.color);
-		    
-		    lblSumMejoras = new JLabel(" Mejoras Totales: " + (Juego.mejora1 + Juego.mejora2 + Juego.mejora3 + Juego.mejora4));
+		    lblSumMejoras = new JLabel(" Mejoras Totales: " + (Juego.mejora1 + Juego.mejora2 + Juego.mejora3 + Juego.mejora4) + " mejoras");
 		    panel.add(lblSumMejoras);
 		    lblSumMejoras.setForeground(Juego.color);
 		    
 		    lblBitsPC = new JLabel(" Bits Por Click: " + Juego.bitsPC + " bits");
 		    panel.add(lblBitsPC);
 		    lblBitsPC.setForeground(Juego.color);
+		    
+		    lblClicks = new JLabel(" Clicks efectuados: " + Juego.bitsPC);
+		    panel.add(lblClicks);
+		    lblClicks.setForeground(Juego.color);
 		    
 		    if(Juego.tiempo < 3600) {
 		    	lblMins = new JLabel(" Tiempo Jugado: " + df.format(Juego.tiempo) + " mins");
@@ -122,11 +120,11 @@ public class Info extends JFrame implements ActionListener, Runnable {
 		    if(Menu.sesion) {
 		    Functions.cargarDrivers();
 		    try {
-				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cpuclicker", "root", "");
+		    	conn = DriverManager.getConnection("jdbc:mysql://hl1235.dinaserver.com/CPUClicker", "ibangames", "aW=112jWdKlHD013a.O");
 				Statement stmtMax = conn.createStatement();
 				ResultSet rsMax = stmtMax.executeQuery("SELECT bitsMaximos FROM estadisticas WHERE idUsuario = " + idUsuario);
 				if(rsMax.next()) {
-					lblMaximos.setText("Bits Máximos: " + rsMax.getInt("bitsMaximos") + " bits");
+					lblMaximos.setText("Bits Máximos: " + rsMax.getLong("bitsMaximos") + " bits");
 				}
 				Statement stmtMins = conn.createStatement();
 				ResultSet rsMins = stmtMins.executeQuery("SELECT minutosJugados FROM estadisticas WHERE idUsuario = " + idUsuario);
@@ -142,33 +140,22 @@ public class Info extends JFrame implements ActionListener, Runnable {
 				
 				
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		    
 		    setVisible(true);
 		    }
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 			
-		
+		Info info = new Info();
+		hilo = new Thread(info);
 	    }
 
 	
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public static void main(String[] args) throws IOException {
-		Info info = new Info();
-		hilo = new Thread(info);
-	}
 
 
 
@@ -176,47 +163,34 @@ public class Info extends JFrame implements ActionListener, Runnable {
 	public void run() {
 		while(Juego.abierto)
 		try{
-			Thread.sleep(20000);
+			Thread.sleep(1000);
 		if (!Menu.sesion) {
 			Functions.actualizarDatos();
 			try {
 				File file = new File("datos.txt");
-				BufferedReader reader;
+				BufferedReader reader = null;
 				try {
 					reader = new BufferedReader(new FileReader(file));
-					Juego.bits = Long.parseLong(reader.readLine());
-					Juego.bitsMax = Long.parseLong(reader.readLine());
-					Juego.bitsPS = Integer.parseInt(reader.readLine());
-					Juego.bitsPC = Integer.parseInt(reader.readLine());
-					Juego.clicks = Integer.parseInt(reader.readLine());
-					Juego.BSoD = Integer.parseInt(reader.readLine());
-					Juego.mejora1 = Integer.parseInt(reader.readLine());
-					Juego.mejora2 = Integer.parseInt(reader.readLine());
-					Juego.mejora3 = Integer.parseInt(reader.readLine());
-					Juego.mejora4 = Integer.parseInt(reader.readLine());
-					Juego.tiempo = Double.parseDouble(reader.readLine());
-					Juego.arquitectura = reader.readLine();
+					lblActuales.setText("Bits Actuales: " + reader.readLine() + " bits");
+					lblMaximos.setText(" Bits Máximos: " + reader.readLine() + " bits");
+					lblPS.setText("Bits Por Segundo: " + reader.readLine() + " bits P/S");
+					lblBitsPC.setText(" Bits Por Click: " + reader.readLine() + " bits");
+					lblClicks.setText(" Clicks efectuados: " + reader.readLine());
+					lblSumMejoras.setText(" Mejoras Totales: " + (Integer.parseInt(reader.readLine()) + Integer.parseInt(reader.readLine()) + Integer.parseInt(reader.readLine()) + reader.readLine())  + " mejoras");
+					if(Double.parseDouble(reader.readLine()) < 3600) {
+				    	lblMins.setText(" Tiempo Jugado: " + df.format(Double.parseDouble(reader.readLine()) / 60) + " mins");
+					    lblMins.setForeground(Juego.color);
+				    }
+				    else {
+				    	lblMins.setText(" Tiempo Jugado: " + (df.format(Double.parseDouble(reader.readLine()) / 3600)) + "h");
+					    lblMins.setForeground(Juego.color);
+				    }
+					lblArquitectura.setText(" Nombre de la arquitectura: " + reader.readLine());
 					reader.close();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
-				lblActuales.setText("Bits Actuales: " + Juego.bits + " bits");
-				lblMaximos.setText(" Bits Máximos: " + Juego.bitsMax + " bits");
-				lblPS.setText(Juego.bitsPS + " bits P/S");
-				lblPS_Raw.setText(Juego.bitsPS + " bits P/S");
-				lblBitsPC.setText(" Bits Por Click: " + Juego.bitsPC + " bits");
-				lblSumMejoras.setText(" Mejoras Totales: " + (Juego.mejora1 + Juego.mejora2 + Juego.mejora3 + Juego.mejora4));
-				if(Juego.tiempo < 3600) {
-			    	lblMins.setText(" Tiempo Jugado: " + df.format(Juego.tiempo) + " mins");
-				    panel.add(lblMins);
-				    lblMins.setForeground(Juego.color);
-			    }
-			    else {
-			    	lblMins.setText(" Tiempo Jugado: " + (df.format(Juego.tiempo / 3600)) + "h");
-				    panel.add(lblMins);
-				    lblMins.setForeground(Juego.color);
-			    }
-				lblArquitectura.setText(" Nombre de la arquitectura: " + Juego.arquitectura);
+				
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -226,6 +200,7 @@ public class Info extends JFrame implements ActionListener, Runnable {
 
 		if (Menu.sesion) {
 			Functions.cargado();
+			Functions.actualizarDatos();
 		}
 		}
 		catch (Exception e){

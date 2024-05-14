@@ -1,5 +1,4 @@
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -11,32 +10,34 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.EventListener;
 import java.util.LinkedList;
-
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.ColorUIResource;
 
-@SuppressWarnings("serial")
-public class InicioSesion extends JFrame implements  EventListener, ActionListener, Runnable {
+
+public class InicioSesion extends JPanel implements  EventListener, ActionListener{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JLabel lblTitulo, lblUsuario, lblContraseña;
 	JTextField txtUsuario;
 	JButton btnConfirmar;
+	JButton btnAtras;
 	JPasswordField pswContraseña;
+	private Aplicacion aplicacion;
 	
 	
-	
-	InicioSesion(){
-		
-		Container frame = getContentPane();
-		
+	InicioSesion(Aplicacion aplicacion){
+		this.aplicacion = aplicacion; 
+		Functions.cargarDrivers();
 		LinkedList<Object> a=new LinkedList<Object>();
 		a.add(0.3);
 		a.add(0.3);
@@ -45,20 +46,12 @@ public class InicioSesion extends JFrame implements  EventListener, ActionListen
 		a.add(new ColorUIResource(100, 100, 100));
 		
 		UIManager.put("Button.gradient",a);
-		
-		setTitle("Inicio de sesión");
 
 		setSize(300, 400);
-
-	    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	    
-	    setLayout(new GridLayout(6,1));
-	    
-	    setUndecorated(true);
-	    
-		getRootPane().setWindowDecorationStyle(JRootPane.NONE);
-
-		frame.setBackground(new Color(0, 0, 0));
+	    setLayout(new GridLayout(7,1));
+		
+		setBackground(new Color(0, 0, 0));
 		
 	    lblTitulo = new JLabel("Inicio de Sesión");
 	    lblTitulo.setFont(new Font("Arial", Font.PLAIN, 42));
@@ -96,12 +89,12 @@ public class InicioSesion extends JFrame implements  EventListener, ActionListen
 	    btnConfirmar.addActionListener(this);
 	    btnConfirmar.setForeground(Juego.color);
 	    btnConfirmar.setBorder(new LineBorder(new Color(0,255,0)));
-	}
-	
-	@Override
-	public void run() {
-		
-
+	    
+	    btnAtras = new JButton("Atrás");
+	    add(btnAtras);
+	    btnAtras.addActionListener(this);
+	    btnAtras.setForeground(Color.RED);
+	    btnAtras.setBorder(new LineBorder(new Color(0,255,0)));
 	}
 
 	@Override
@@ -113,13 +106,13 @@ public class InicioSesion extends JFrame implements  EventListener, ActionListen
 		String EncryptpasswdBBDD = "";
 		String Encryptpasswd = Functions.encriptacion(new String(pswContraseña.getPassword()));
 		try {
-			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cpuclicker", "root", "");
+			Connection conn = DriverManager.getConnection("jdbc:mysql://hl1235.dinaserver.com/CPUClicker", "ibangames", "aW=112jWdKlHD013a.O");
 
 			Statement stmt = conn.createStatement();
 			if (seleccion == btnConfirmar) {
-				ResultSet rs = stmt.executeQuery("SELECT nombreUsuario, contraseña FROM usuario WHERE nombreUsuario = '" + txtUsuario.getText() + "'");
+				ResultSet rs = stmt.executeQuery("SELECT nombreUsuario, contrasena FROM usuario WHERE nombreUsuario = '" + txtUsuario.getText() + "'");
 				if(rs.next()) {
-					EncryptpasswdBBDD = rs.getString("contraseña");
+					EncryptpasswdBBDD = rs.getString("contrasena");
 					UserBBDD = rs.getString("nombreUsuario");
 				}
 				if(EncryptpasswdBBDD.equals(Encryptpasswd) && UserBBDD.equals(User)) {
@@ -130,13 +123,15 @@ public class InicioSesion extends JFrame implements  EventListener, ActionListen
 					Menu.btnCerrarSesion.setEnabled(true);
 					Functions.mantenerSesiónLocal();
 					System.out.println("sesion: " + Menu.sesion + "; usuario: " + Menu.usuario);
-					
-					this.dispose();
+					aplicacion.mostrarMenu();
 				}
 				else{
 					JOptionPane.showMessageDialog(seleccion, "Usuario y/o contraseña incorrectos");
 				}
 				
+			}
+			if (seleccion == btnAtras){
+				aplicacion.mostrarMenu();
 			}
 			
 		} catch (SQLException e1) {
@@ -148,12 +143,6 @@ public class InicioSesion extends JFrame implements  EventListener, ActionListen
 	
 	}
 	
-	public static void main(String[]args) {
-		Functions.cargarDrivers();
-		InicioSesion sesion = new InicioSesion();
-		sesion.setVisible(true);
-		sesion.setResizable(false);
-	}
 
 	
 

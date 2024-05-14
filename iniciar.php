@@ -18,9 +18,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { // Solo ejecutar este código si el 
     $nombre_usuario = $_POST["userIniciar"];
     
     // Variables con las credenciales del servidor/base de datos
-    $servidor = "localhost";
-    $usuario = "root";
-    $password = "";
+    $servidor = "hl1235.dinaserver.com";
+    $usuario = "ibangames";
+    $password = "aW=112jWdKlHD013a.O";
     $basedatos = "CPUClicker";
 
     // Crear conexión usando las credenciales
@@ -37,18 +37,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { // Solo ejecutar este código si el 
 
    
 
-    $sql_comprobarUser = "SELECT nombreUsuario, contraseña FROM Usuario WHERE nombreUsuario = '$nombre_usuario'";
+    $sql_comprobarUser = "SELECT nombreUsuario, contrasena FROM usuario WHERE nombreUsuario = '$nombre_usuario'";
     $resultIdcu = $conn->query($sql_comprobarUser);
         
     if($row = $resultIdcu->fetch_assoc()) {
           $userBBDD = $row["nombreUsuario"];
-          $passwordBBDD = $row["contraseña"];
+          $passwordBBDD = $row["contrasena"];
     }
 
     if ($userBBDD == $nombre_usuario && $encrypt == $passwordBBDD) { 
       
         $_SESSION['sesion'] = $nombre_usuario;
-        echo $_SESSION['sesion'];
         echo "<h1 style= 'font-family:hack; text-align:center; color:rgb(255, 239, 187);'>Sesión iniciada correctamente</h1>";
         echo "<ul style='position:relative; left:42%; color:rgb(160, 160, 160);' >
             <li style= 'font-family:hack;'>Nombre de usuario: $nombre_usuario</li>

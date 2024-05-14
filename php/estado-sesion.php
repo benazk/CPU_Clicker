@@ -14,9 +14,9 @@ $BSoD = null;
 $estadoSesion = null;
 $abrirCerrar = null;
 
-$servidor = "localhost";
-$usuario = "root";
-$password = "";
+$servidor = "hl1235.dinaserver.com";
+$usuario = "ibangames";
+$password = "aW=112jWdKlHD013a.O";
 $basedatos = "CPUClicker";
 
 if (!isset($_SESSION['sesion'])) {
@@ -34,6 +34,7 @@ if (!isset($_SESSION['sesion'])) {
 
 
 } else {
+    
     $user = $_SESSION['sesion'];
     $estadoSesion = "php/cerrar-sesion.php";
     $abrirCerrar = "Cerrar Sesión";
@@ -42,10 +43,11 @@ if (!isset($_SESSION['sesion'])) {
     if ($conn->connect_error) {
         die("Conexión fallida: " . $conn->connect_error);
     }
-    $sql_idUser = "SELECT idUsuario FROM usuario WHERE nombreUsuario = '$usuario_sesion'";
+    $sql_idUser = "SELECT idUsuario FROM usuario WHERE nombreUsuario = '$user'";
     $resultIdusuario = $conn->query($sql_idUser);
-
-    if ($row = $resultIdusuario->fetch_array()) {
+    
+    
+    if ($row = $resultIdusuario->fetch_assoc()) {
         $idUser = $row["idUsuario"];
     }
 

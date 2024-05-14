@@ -1,18 +1,13 @@
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.MessageDigest;
@@ -23,7 +18,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -32,79 +26,77 @@ import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
 import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.Timer;
 
 public class Functions {
-	static Connection conn;
 
-	public static int precioFuncion(int precioBase, int cantMejoras) {
+	static Connection conn;
+	public static long precioFuncion(long precioBase, long cantMejoras) {
 		int multiplier = 0;
 		for (int i = 0; i < cantMejoras; i++) {
-			if (i % 3 == 0) {
+			if (i % 2 == 0) {
 				multiplier += 1;
 			}
-			precioBase += (int) Math.floor(precioBase / 4) + multiplier;
+			precioBase += (long) Math.floor(precioBase / 3) + multiplier;
 		}
 		return precioBase;
 	}
 
-	public static int mejora1Price(int cantMej) {
-		int precioBase = 5;
-		int precioFinal = precioFuncion(precioBase, cantMej);
+	public static long mejora1Price(long cantMej) {
+		long precioBase = 10;
+		long precioFinal = precioFuncion(precioBase, cantMej);
 		;
 		return precioFinal;
 	}
 
-	public static int mejora1(int cantMej) {
-		int cantFinal = 1;
+	public static long mejora1(long cantMej) {
+		long cantFinal = 1;
 		for (int i = 0; i <= cantMej; i++) {
-			cantFinal += i * (1 + Juego.BSoD);
+			cantFinal += i ^ (1 + Juego.BSoD);
 		}
 		return cantFinal;
 	}
 
-	public static int mejora2Price(int cantMej) {
-		int precioBase = 40;
-		int precioFinal = precioFuncion(precioBase, cantMej);
+	public static long mejora2Price(long cantMej) {
+		long precioBase = 40;
+		long precioFinal = precioFuncion(precioBase, cantMej);
 		return precioFinal;
 
 	}
 
-	public static int mejora2(int cantMej) {
-		int cantFinal = 1;
-		for (int i = 0; i <= cantMej * (1 + Juego.BSoD); i++) {
+	public static long mejora2(long cantMej) {
+		long cantFinal = 1;
+		for (int i = 0; i <= (cantMej ^ (1 + Juego.BSoD)); i++) {
 			cantFinal += i;
 		}
 		return cantFinal;
 	}
 
-	public static int mejora3Price(int cantMej) {
-		int precioBase = 300;
-		int precioFinal = precioFuncion(precioBase, cantMej);
+	public static long mejora3Price(long cantMej) {
+		long precioBase = 500;
+		long precioFinal = precioFuncion(precioBase, cantMej);
 		return precioFinal;
 
 	}
 
-	public static int mejora3(int cantMej) {
-		int cantFinal = 1;
-		for (int i = 0; i <= cantMej * (1 + Juego.BSoD); i++) {
-			cantFinal += i * 8;
+	public static long mejora3(long cantMej) {
+		long cantFinal = 1;
+		for (int i = 0; i <= (cantMej ^ (1 + Juego.BSoD)); i++) {
+			cantFinal += i * 4;
 		}
 		return cantFinal;
 	}
 
-	public static int mejora4Price(int cantMej) {
-		int precioBase = 2000;
-		int precioFinal = precioFuncion(precioBase, cantMej);
+	public static long mejora4Price(long cantMej) {
+		long precioBase = 3000;
+		long precioFinal = precioFuncion(precioBase, cantMej);
 		return precioFinal;
 
 	}
 
-	public static int mejora4(int cantMej) {
-		int cantFinal = 1;
-		for (int i = 0; i <= cantMej * (1 + Juego.BSoD); i++) {
-			cantFinal += i * 50;
+	public static long mejora4(long cantMej) {
+		long cantFinal = 1;
+		for (int i = 0; i <= (cantMej ^ (1 + Juego.BSoD)); i++) {
+			cantFinal += i * 30;
 		}
 		return cantFinal;
 	}
@@ -153,7 +145,7 @@ public class Functions {
 	public static int idUsuario() {
 		int idUsuario = 0;
 		try {
-			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cpuclicker", "root", "");
+			 conn = DriverManager.getConnection("jdbc:mysql://hl1235.dinaserver.com/CPUClicker", "ibangames", "aW=112jWdKlHD013a.O");
 			PreparedStatement stmtIdUser = conn.prepareStatement(
 					"SELECT idUsuario FROM usuario WHERE nombreUsuario = " + "'" + Menu.usuario + "';");
 			ResultSet rsUser = stmtIdUser.executeQuery();
@@ -161,7 +153,6 @@ public class Functions {
 				idUsuario = rsUser.getInt("idUsuario");
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return idUsuario;
@@ -213,8 +204,8 @@ public class Functions {
 
 	public static void cargado() { // Cargar los datos de la base de datos (si el usuario ha iniciado sesión)
 		int idUsuario = idUsuario();
-		int bitsBBDD = 0;
-		int bitsPSBBDD = 0;
+		long bitsBBDD = 0;
+		long bitsPSBBDD = 0;
 		int clicks = 0;
 		int cantidadTicks = 0;
 		int cantidadCache = 0;
@@ -222,7 +213,7 @@ public class Functions {
 		int cantidadTransistores = 0;
 		int BSoD_BBDD = 0;
 		try {
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cpuclicker", "root", "");
+			conn = DriverManager.getConnection("jdbc:mysql://hl1235.dinaserver.com/CPUClicker", "ibangames", "aW=112jWdKlHD013a.O");
 			PreparedStatement stmtMejoras = conn
 					.prepareStatement("SELECT * FROM mejoras WHERE idUsuario = " + idUsuario + ";");
 			ResultSet rsMejoras = stmtMejoras.executeQuery();
@@ -236,10 +227,10 @@ public class Functions {
 					.prepareStatement("SELECT * FROM estadisticas WHERE idUsuario = " + idUsuario + ";");
 			ResultSet rsEstadisticas = stmtEstadisticas.executeQuery();
 			if (rsEstadisticas.next()) {
-				bitsBBDD = rsEstadisticas.getInt("bitsActuales");
-				Juego.bitsPS = rsEstadisticas.getInt("bitsPS");
+				bitsBBDD = rsEstadisticas.getLong("bitsActuales");
+				Juego.bitsPS = rsEstadisticas.getLong("bitsPS");
 				BSoD_BBDD = rsEstadisticas.getInt("BSoD");
-				bitsPSBBDD = rsEstadisticas.getInt("bitsPS");
+				bitsPSBBDD = rsEstadisticas.getLong("bitsPS");
 				clicks = rsEstadisticas.getInt("clicksHechos");
 			}
 
@@ -254,16 +245,16 @@ public class Functions {
 		Juego.lblCantidadM4.setText(String.valueOf(cantidadTransistores));
 		Juego.BSoD = BSoD_BBDD;
 		Juego.clicks = clicks;
+		actualizarDatos();
 	}
 
 	public static void guardado() { // Guardar los datos en la base de datos
 		actualizarDatos();
 		int idUsuario = idUsuario();
 		String arquitectura = Juego.arquitectura;
-		long bits = (int) Integer.parseInt(Juego.lblBits.getText().substring(0, Juego.lblBits.getText().length() - 5));
+		long bits = Long.parseLong(Juego.lblBits.getText().substring(0, Juego.lblBits.getText().length() - 5));
 		long bitsMax = Juego.bitsMax;
-		long bitsPS = (long) Integer
-				.parseInt(Juego.lblBitsPS.getText().substring(0, Juego.lblBitsPS.getText().length() - 9));
+		long bitsPS = Long.parseLong(Juego.lblBitsPS.getText().substring(0, Juego.lblBitsPS.getText().length() - 9));
 		int clicks = 0;
 		int cantidadTicks = Integer.parseInt(Juego.lblCantidadM1.getText());
 		int cantidadCache = Integer.parseInt(Juego.lblCantidadM2.getText());
@@ -274,7 +265,7 @@ public class Functions {
 		int sumMejoras = cantidadTicks + cantidadCache + cantidadFPS + cantidadTransistores;
 
 		try {
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cpuclicker", "root", "");
+			conn = DriverManager.getConnection("jdbc:mysql://hl1235.dinaserver.com/CPUClicker", "ibangames", "aW=112jWdKlHD013a.O");
 			PreparedStatement stmtMejoras1 = conn.prepareStatement(
 					"UPDATE mejoras SET cantidadTicks = " + cantidadTicks + " WHERE idUsuario = " + idUsuario + ";");
 			stmtMejoras1.executeUpdate();
@@ -326,7 +317,7 @@ public class Functions {
 			try {
 
 				fw.write(String.valueOf(Menu.usuario) + "\n");
-				fw.write(String.valueOf(Menu.sesion) + "\n");
+				fw.write(String.valueOf(Menu.sesion));
 
 			} catch (Exception e) {
 
@@ -369,7 +360,6 @@ public class Functions {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Guardar Datos");
 
 	}
 
@@ -405,41 +395,44 @@ public class Functions {
 		Juego.lblCostoM3.setText(String.valueOf(Functions.mejora3Price(Juego.mejora3)) + " bits");
 		Juego.lblCostoM4.setText(String.valueOf(Functions.mejora4Price(Juego.mejora4)) + " bits");
 		Juego.lblArquitectura.setText(Juego.arquitectura);
-		System.out.println("Cargar datos");
 	}
 
 	public static void actualizarDatos() {
-		Juego.bits = Integer.parseInt(Juego.lblBits.getText().substring(0, Juego.lblBits.getText().length() - 5));
-		Juego.bitsPS = Integer.parseInt(Juego.lblBitsPS.getText().substring(0, Juego.lblBitsPS.getText().length() - 9))
-				* (Juego.BSoD + 1);
-		Juego.bitsPC = Functions.mejora1(Juego.mejora1);
+		Juego.bits = Long.parseLong(Juego.lblBits.getText().substring(0, Juego.lblBits.getText().length() - 5));
+		Juego.bitsPS = Long.parseLong(Juego.lblBitsPS.getText().substring(0, Juego.lblBitsPS.getText().length() - 9));
+		Juego.bitsPC = (int) Functions.mejora1(Juego.mejora1);
 		Juego.mejora1 = Integer.parseInt(Juego.lblCantidadM1.getText());
 		Juego.mejora2 = Integer.parseInt(Juego.lblCantidadM2.getText());
 		Juego.mejora3 = Integer.parseInt(Juego.lblCantidadM3.getText());
 		Juego.mejora4 = Integer.parseInt(Juego.lblCantidadM4.getText());
-		System.out.println("Actualizar Datos");
 	}
 
 	public static void pasarTiempo() {
 		try {
+			System.out.println(Juego.bitsPS);
 			Thread.sleep(100);
 			Juego.tiempo += 0.1;
-			Juego.bits = Integer.parseInt(Juego.lblBits.getText().substring(0, Juego.lblBits.getText().length() - 5));
-			Juego.bitsPS = Integer.parseInt(
-					Juego.lblBitsPS.getText().substring(0, Juego.lblBitsPS.getText().length() - 9)) * (Juego.BSoD + 1);
+			Juego.bits = Long.parseLong(Juego.lblBits.getText().substring(0, Juego.lblBits.getText().length() - 5));
+			Juego.bitsPS = Long.parseLong(
+					Juego.lblBitsPS.getText().substring(0, Juego.lblBitsPS.getText().length() - 9));
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if (Juego.bits > 10) {
-			Juego.bits += (int) Math.floor(Juego.bitsPS / 10);
+			Juego.lblBits.setText(String.valueOf(Long.parseLong(Juego.lblBits.getText().substring(0, Juego.lblBits.getText().length() - 5)) +
+					(long) Math.floor(Long.parseLong(Juego.lblBitsPS.getText().substring(0, Juego.lblBitsPS.getText().length() - 9))) / 10) + " bits");
 		} else {
-			Juego.bits += Juego.bitsPS;
+			Juego.lblBits.setText(String.valueOf(Long.parseLong(Juego.lblBits.getText().substring(0, Juego.lblBits.getText().length() - 5)) + 
+					Long.parseLong(Juego.lblBitsPS.getText().substring(0, Juego.lblBitsPS.getText().length() - 9))) + " bits");
 		}
-		Juego.lblBits.setText(String.valueOf(Juego.bits) + " bits");
 		if (Juego.bits > Juego.bitsMax) {
 			Juego.bitsMax = Juego.bits;
 		}
+	
+		if(Long.parseLong(Juego.lblBits.getText().substring(0, Juego.lblBits.getText().length() - 5)) < 0){
+			Juego.lblBits.setText(0 + " bits");
+		}
+		
 
 	}
 
@@ -494,7 +487,6 @@ public class Functions {
 		return Math.min(control.getMaximum(), Math.max(control.getMinimum(), level));
 	}
 	
-	@SuppressWarnings("unused")
 	public static void pagWeb(JButton btnPagWeb, final String url, String text) {
         btnPagWeb.setText("<html><a href=\"\" style= 'text-decoration= none'>"+text+"</a></html>");
         btnPagWeb.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -509,5 +501,7 @@ public class Functions {
             }
         });
     }
+	
+	
 
 }
